@@ -1,0 +1,56 @@
+.register {
+  background: #35d0ba;
+  width: 1140px;
+  margin: 0 auto;
+  padding: 36px;
+}
+.register-left {
+  margin-top: 48px;
+}
+.register-left-img {
+  margin: 0 auto;
+  margin-top: 70px;
+  margin-bottom: 10px;
+  width: 200px;
+  display: block;
+}
+.register-left-btn {
+  border-radius: 24px;
+  padding: 5px;
+  width: 140px;
+  background: #f8f9fa;
+  font-weight: bold;
+  color: #383d41;
+  margin: 0 auto;
+  margin-top: 70px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  text-align: center;
+  display: block;
+  font-weight: bolder;
+}
+.register-right {
+  padding-top: 80px;
+  width: 100%;
+  background: #f8f9fa;
+  border-top-left-radius: 10% 50%;
+  border-bottom-left-radius: 10% 50%;
+}
+.register-right-title {
+  text-align: center;
+  font-weight: bolder;
+  margin-bottom: 46px;
+  line-height: 34px;
+  font-size: 28px;
+  color: #495057;
+}
+.register-right-form {
+  margin: 0 100px;
+}
+.register-right-form-button {
+  display: block;
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 80px;
+}
