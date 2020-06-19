@@ -2,17 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, message, Row, Col } from "antd";
 import icon from "../assets/favicon.ico";
-import "./Register.css";
-
+import "../css/Register.css";
 
 const Register = () => {
-  // 注册账号数据处理
   const onFinish = (values) => {
     console.log(values);
-    message.success("register success~");
+    alert("A verification link has been sent to your email");
     window.location.href = "/login";
   };
-
 
   return (
     <div style={{ paddingTop: 36 }}>
@@ -33,8 +30,6 @@ const Register = () => {
                 name="normal_register"
                 className="register-right-form"
                 onFinish={onFinish}
-                action="auth/sign-up"
-                method="POST"
               >
                 <Form.Item
                   name="email"
@@ -45,7 +40,7 @@ const Register = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="NUS email" name="email" addonAfter="@u.nus.edu" />
+                  <Input placeholder="NUS email" addonAfter="@u.nus.edu" />
                 </Form.Item>
                 <Form.Item
                   name="password"
@@ -56,7 +51,7 @@ const Register = () => {
                     },
                   ]}
                 >
-                  <Input type="password" name="password" placeholder="Password" />
+                  <Input type="password" placeholder="Password" />
                 </Form.Item>
                 <Form.Item
                   name="confirm"
@@ -90,7 +85,7 @@ const Register = () => {
                     },
                   ]}
                 >
-                  <Input placeholder="Username" type="text" name="username" />
+                  <Input placeholder="Username" />
                 </Form.Item>
                 <Form.Item>
                   <Button

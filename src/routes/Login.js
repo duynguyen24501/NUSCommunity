@@ -2,10 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
 import icon from "../assets/favicon.ico";
-import "./Login.css";
+import "../css/Login.css";
 
 const Login = () => {
-  // 登录验证
   const onFinish = (values) => {
     console.log(values);
     message.success("login success~");

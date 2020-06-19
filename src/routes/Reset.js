@@ -2,13 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, message, Row, Col } from "antd";
 import icon from "../assets/favicon.ico";
-import "./Reset.css";
+import "../css/Reset.css";
 
 const Reset = () => {
-  // 注册账号数据处理
   const onFinish = (values) => {
     console.log(values);
-    message.success("reset success~");
+    alert("A verification link has been sent to your email");
     window.location.href = "/login";
   };
 
