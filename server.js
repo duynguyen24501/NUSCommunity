@@ -1,25 +1,18 @@
 var mysql = require("mysql");
-
 var express = require("express");
 var session = require("express-session");
 var bodyParser = require("body-parser");
 var path = require("path");
-
-//////////////////////////////////////////////////////////////////
 const pool = require("./dbconfig/dbconfig.js");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
 const nodemailer = require("nodemailer");
 const nodemailerSmtpTransport = require("nodemailer-smtp-transport");
 const nodemailerDirectTransport = require("nodemailer-direct-transport");
 
+
 let nodemailerTransport = nodemailerDirectTransport();
-if (
-  process.env.EMAIL_SERVER &&
-  process.env.EMAIL_USERNAME &&
-  process.env.EMAIL_PASSWORD
-) {
+if (process.env.EMAIL_SERVER && process.env.EMAIL_USERNAME && process.env.EMAIL_PASSWORD) {
   nodemailerTransport = nodemailerSmtpTransport({
     host: process.env.EMAIL_SERVER,
     port: process.env.EMAIL_PORT || 25,
@@ -30,22 +23,6 @@ if (
     },
   });
 }
-
-//////////////////////////////////////////////////////////////////
-// Connect mySQL server
-/*
-var connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: 'duynguyen24501',
-    database : 'users'
-  });
-
-connection.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected!");
-});
-*/
 
 var app = express();
 app.use(
@@ -59,42 +36,15 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-/////////////////////////////////////////////////////////////////////
-// API for Login main page
 
-// Get the login main page
-// app.get('/', function(req, res) {
-//     //res.sendFile(path.join(__dirname + '/login.html'));
-//     res.sendFile(path.join(__dirname + '/public/login.html'));
-//     app.use(express.static(path.join(__dirname, 'public')));
-// });
-
-// Fill in users' information
-/*
-app.post('/auth', function(req, res) {
-	const email = req.body.email;
-	const password = req.body.password;
-	if (email && password) {
-		connection.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], function(error, results, fields) {
-			if (results.length > 0) {
-				req.session.loggedin = true;
-                req.session.email = email;
-				res.redirect('/home');
-			} else {
-				res.send('Incorrect Username and/or Password!');
-			}			
-			res.end();
-		});
-	} else {
-		res.send('Please enter Email and Password!');
-		res.end();
-	}
+app.get('/api/hello', (req, res) => {
+  res.send({ express: 'Hello From Express' });
 });
-*/
 
 app.post("/auth/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  console.log(email + " " + password);
 
   if (email && password) {
     const results = await getUser(email);
@@ -132,9 +82,8 @@ async function getUser(email) {
     console.error(e);
   }
 }
-///////////////////////////////////////////////////////////////////
 
-// If login successfully
+/*
 app.get("/home", function (req, res) {
   if (req.session.loggedin) {
     res.send("Welcome back, " + req.session.email + "!");
@@ -143,32 +92,13 @@ app.get("/home", function (req, res) {
   }
   res.end();
 });
+*/
 
 ///////////////////////////////////////////////////////////////
 // API for registration
-/*
-app.get('/register', function(req,res) {
-	res.send('Registration page');
-	res.end();
-})
 
-app.post('/signup', function(req, res) {
-	var newUser = {
-		username : req.body.username,
-		password : req.body.password,
-		email : req.body.email,
-	}
-
-	connection.query("INSERT INTO users SET ?", newUser, function(err,result,fields) {
-		if (err) throw err;
-		res.send("Register successfully");
-		res.end();
-	});
-})
-*/
-
-app.post("/auth/sign-up", async (req, res) => {
-  const email = req.body.email;
+app.post("/auth/signup", async (req, res) => {
+  const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
   const username = req.body.username;
   console.log(email + "  " + password + " " + username);
@@ -178,18 +108,11 @@ app.post("/auth/sign-up", async (req, res) => {
       const results = await addUser(email, hash, username);
       if (results && results.length > 0) {
         bcrypt.hash(email + hash, saltRounds).then(function (hash) {
-          sendVerificationEmail(
-            email,
-            "http://" +
-              req.headers.host +
-              "/auth/verify?email=" +
-              email +
-              "&hash=" +
-              hash
-          );
+          sendVerificationEmail(email, "http://" + req.headers.host + "/auth/verify?email=" + email + "&hash=" + hash);
         });
         return res.json({ email: email });
       } else {
+        console.log("email exists already!!!");
         return res.json({ message: "User already exists with email " + email });
       }
     });
@@ -238,17 +161,22 @@ app.get("/auth/verify", async (req, res) => {
           if (response == true) {
             const results = await verifyUsers(email);
             if (results.length > 0) {
-              res.sendFile(
-                path.join(__dirname + "/public/success-verification.html")
-              );
-              app.use(express.static(path.join(__dirname, "public")));
-              return;
-              //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
+                return res.json({ message: "Email verified successfully. You can sign in now." });
+                //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
             } else {
-              return res.redirect(
-                `/callback?message=Email already verified. You can sign in now.`
-              );
+                return res.redirect(`/callback?message=Email already verified. You can sign in now.`)
             }
+            //   res.sendFile(
+            //     path.join(__dirname + "/public/success-verification.html")
+            //   );
+            //   app.use(express.static(path.join(__dirname, "public")));
+            //   return;
+            //   //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
+            // } else {
+            //   return res.redirect(
+            //     `/callback?message=Email already verified. You can sign in now.`
+            //   );
+            
           }
         });
     } else {
@@ -272,47 +200,8 @@ async function verifyUsers(email) {
   }
 }
 
-////////////////////////////////////////////////////////////////
-// API for forget-password
-/*
-app.get('/forgetpassword', function(req,res) {
-	res.send('Forget-password page');
-	res.end();
-})
-
-app.put('/forgetpw', function(req,res) {
-	var email = req.body.email;
-	var newPassword = req.body.new_password;
-
-	if (email) {
-		connection.query('SELECT * FROM users WHERE email = ?', [email], function(err, results, fields) {
-			if (err) throw err;
-			if (results.length > 0) {
-				req.session.email = email;
-				console.log("This email exists in the database");
-			} else {
-				console.log("Here");
-				res.send("The email is not found");
-			}			
-		});
-	} else {
-		return res.send('Please enter Email and New Password');
-		//res.end();
-	}
-
-	let updateSql = "UPDATE users SET password = ? WHERE email = ?";
-	let data = [newPassword, email];
-
-	connection.query(updateSql, data, function(err,result,fields) {
-		if (err) throw err;
-		res.send("Changed password successfully");
-		res.end();
-	})
-})
-*/
-
-app.post("/auth/forget-password", async (req, res) => {
-  const email = req.body.email;
+app.post("/auth/reset", async (req, res) => {
+  const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
   console.log(email + " " + password);
   if (email && password) {
@@ -321,13 +210,7 @@ app.post("/auth/forget-password", async (req, res) => {
       if (results && results.length > 0) {
         bcrypt.hash(email + hash, saltRounds).then(function (hash) {
           sendVerificationEmail(
-            email,
-            "http://" +
-              req.headers.host +
-              "/auth/verify?email=" +
-              email +
-              "&hash=" +
-              hash
+            email, "http://" + req.headers.host + "/auth/verify?email=" + email + "&hash=" + hash
           );
         });
         return res.json({ email: email });
@@ -350,5 +233,5 @@ async function updateUser(email, password) {
     console.error(e);
   }
 }
-
-app.listen(3000);
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`Listening on port ${port}`));
