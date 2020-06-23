@@ -161,22 +161,14 @@ app.get("/auth/verify", async (req, res) => {
           if (response == true) {
             const results = await verifyUsers(email);
             if (results.length > 0) {
-                return res.json({ message: "Email verified successfully. You can sign in now." });
+                res.sendFile(path.join(__dirname + "/client/public/success-verification.html"));
+                app.use(express.static(path.join(__dirname, "client")));
+                return;
+                //return res.json({ message: "Email verified successfully. You can sign in now." });
                 //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
             } else {
                 return res.redirect(`/callback?message=Email already verified. You can sign in now.`)
             }
-            //   res.sendFile(
-            //     path.join(__dirname + "/public/success-verification.html")
-            //   );
-            //   app.use(express.static(path.join(__dirname, "public")));
-            //   return;
-            //   //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
-            // } else {
-            //   return res.redirect(
-            //     `/callback?message=Email already verified. You can sign in now.`
-            //   );
-            
           }
         });
     } else {
