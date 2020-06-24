@@ -54,3 +54,8 @@
   margin-top: 20px;
   margin-bottom: 80px;
 }
+.alert-style {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+}

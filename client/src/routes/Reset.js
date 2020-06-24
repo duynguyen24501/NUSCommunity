@@ -111,7 +111,10 @@ class Reset extends React.Component {
                 message: response.message
             })
         } else if (response.email) {
-            alert("A verification link has been sent to " + response.email);
+            this.setState({
+              message: "A verification link has been sent to " + response.email
+            })
+            //alert("A verification link has been sent to " + response.email);
             //Router.push('/check-email?email=' + response.email)
         } else {
             this.setState({
@@ -129,7 +132,7 @@ class Reset extends React.Component {
 
   
   render() {
-    const alert = (this.state.message === null) ? <div/> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
+    const alert = (this.state.message === null) ? <div/> : <div className="alert-style" role="alert">{this.state.message}</div>
     return (
     <div style={{ paddingTop: 36 }}>
       <div className="reset">

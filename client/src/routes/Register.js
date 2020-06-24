@@ -81,7 +81,7 @@ class Register extends React.Component {
 
     handleSignUp(event) {
         event.preventDefault()
-        
+
         this.setState({
             message: null
         })
@@ -115,31 +115,34 @@ class Register extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-        .then(res => res.json())
-        .then(response => {
-            if (response.message) {
-                this.setState({
-                    message: response.message
-                })
-            } else if (response.email) {
-                alert("A verification link has been sent to " + response.email);
-                //Router.push('/check-email?email=' + response.email)
-            } else {
-                this.setState({
-                    message: 'Unknown Error!'
-                })
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error)
-            this.setState({
-                message: 'Request Failed!'
+            .then(res => res.json())
+            .then(response => {
+                if (response.message) {
+                    this.setState({
+                        message: response.message
+                    })
+                } else if (response.email) {
+                    this.setState({
+                        message: "A verification link has been sent to " + response.email
+                    })
+                    //alert("A verification link has been sent to " + response.email);
+                    //Router.push('/check-email?email=' + response.email)
+                } else {
+                    this.setState({
+                        message: 'Unknown Error!'
+                    })
+                }
             })
-        })
+            .catch(error => {
+                console.error('Error:', error)
+                this.setState({
+                    message: 'Request Failed!'
+                })
+            })
     }
-        
+
     render() {
-        //const alert = (this.state.message === null) ? <div/> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
+        const alert = (this.state.message === null) ? <div /> : <div className="alert-style" role="alert">{this.state.message}</div>
         return (
             <div style={{ paddingTop: 36 }}>
                 <div className="register">
@@ -158,12 +161,12 @@ class Register extends React.Component {
                                 <Form
                                     name="normal_register"
                                     className="register-right-form"
-                                    //onSubmit={this.handleSignUp}
-                                    // onFinish={(values) => {
-                                    //     console.log(values);
-                                    //     alert("A verification link has been sent to your email");
-                                    //     window.location.href = "/login";
-                                    //   }}
+                                //onSubmit={this.handleSignUp}
+                                // onFinish={(values) => {
+                                //     console.log(values);
+                                //     alert("A verification link has been sent to your email");
+                                //     window.location.href = "/login";
+                                //   }}
                                 >
                                     <Form.Item
                                         name="email"
@@ -221,7 +224,7 @@ class Register extends React.Component {
                                     >
                                         <Input placeholder="Username" name="username" value={this.state.username} onChange={this.handleUsernameChange} />
                                     </Form.Item>
-                                    {/* {alert} */}
+                                    {alert}
                                     <Form.Item>
                                         <Button
                                             type="submit"

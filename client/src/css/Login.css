@@ -68,3 +68,8 @@
   text-align: center;
   display: block;
 }
+.alert-style {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+}

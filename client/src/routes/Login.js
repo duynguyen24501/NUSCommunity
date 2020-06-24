@@ -93,10 +93,11 @@ class Login extends React.Component {
         window.location.href = "/home";
         //Router.push(`/`)
       } else if (response.message) {
-        // this.setState({
-        //   message: response.message
-        // })
-        alert(response.message);
+
+        this.setState({
+           message: response.message
+        })
+        //alert(response.message);
       } else {
         this.setState({
           message: 'Unknown Error!'
@@ -111,7 +112,7 @@ class Login extends React.Component {
     })
   }
   render() {
-      //const alert = (this.state.message === null) ? <div/> : <div className={`alert alert-danger`} role="alert">{this.state.message}</div>
+      const alert = (this.state.message === null) ? <div/> : <div className="alert-style" role="alert">{this.state.message}</div>
       return (
         <div style={{ paddingTop: 25 }}>
           <div className="login">
@@ -150,7 +151,7 @@ class Login extends React.Component {
                     forgot password?
                   </Link>
                 </Form.Item>
-                {/* {alert} */}
+                
                 <Form.Item>
                   <Button
                     type="submit"
@@ -160,6 +161,7 @@ class Login extends React.Component {
                   >
                     SIGN IN
                   </Button>
+                  {alert}
                 </Form.Item>
                 <Link className="login-con-form-register" to="/reg">
                   REGISTER HERE
