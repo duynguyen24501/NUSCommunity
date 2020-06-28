@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "./Header";
+// import Header from "./Header";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import "./index.css";
@@ -29,7 +29,6 @@ export default class Keep extends React.Component {
     const { notes } = this.state;
     return (
       <div>
-        <Header />
         <CreateArea onAdd={this.addNote} />
         {notes.map((noteItem, index) => {
           return (

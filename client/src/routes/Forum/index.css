@@ -42,11 +42,7 @@
   font-size: 18px;
   line-height: 22px;
   font-weight: 300;
-}
-.forum-list-item-msg {
-  margin-top: 10px;
-  line-height: 22px;
-  color: #999;
+  color: #000;
 }
 .forum-list-item-user {
   margin-top: 10px;
@@ -64,23 +60,45 @@
   background-color: #f9f9f9;
   color: #999;
   line-height: 24px;
+  margin-right: 8px;
+}
+.forum-list-item-bottom-edit {
+  line-height: 24px;
+  color: #999;
+  flex: 1;
+  text-align: right;
+  margin-right: 16px;
 }
 .forum-list-item-bottom-time {
   font-weight: 700;
   line-height: 24px;
   color: #999;
-  flex: 1;
   text-align: right;
 }
-.forum-form {
+
+.forumForm {
+  display: flex;
+}
+.forumForm-form {
   width: 100%;
   position: relative;
 }
-.forum-form .my-editor {
+.forumForm-form .my-editor {
   border: 1px solid #d9d9d9;
-  padding-bottom: 32px;
+  padding-bottom: 64px;
 }
-.forum-form-btn {
+.forumForm-form-btn {
+  position: absolute;
+  border-top: 1px solid #d9d9d9;
+  bottom: 56px;
+  width: 100%;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.forumForm-form-btn-2 {
   position: absolute;
   border-top: 1px solid #d9d9d9;
   bottom: 24px;
@@ -90,17 +108,29 @@
   cursor: pointer;
   font-weight: 600;
 }
-.forum-form-btn:hover {
+
+.forumForm-form-btn-del {
+  position: absolute;
+  border-top: 1px solid #d9d9d9;
+  bottom: 24px;
+  width: 100%;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: red;
+}
+.forumForm-form-btn:hover {
   color: #000;
 }
-.forum-form-tag {
+.forumForm-form-tag {
   display: flex;
 }
-.forum-form-tag-msg {
+.forumForm-form-tag-msg {
   color: #000;
   font-weight: 600;
 }
-.forum-form-tag-item {
+.forumForm-form-tag-item {
   padding: 0 10px;
   background-color: #f9f9f9;
   color: #999;
@@ -108,19 +138,123 @@
   display: inline-block;
   margin: 0 5px;
 }
-.forum-form-tag-item-remove {
+.forumForm-form-tag-item-remove {
   margin-left: 5px;
   cursor: pointer;
 }
-.forum-form-tag-input {
+.forumForm-form-tag-input {
   width: 200px;
   border: none;
 }
-.forum-form-tag-input:focus {
+.forumForm-form-tag-input:focus {
   border: none;
   box-shadow: none;
 }
-.forum-form-tag-icon {
+.forumForm-form-tag-icon {
   font-size: 20px;
   cursor: pointer;
+}
+
+.forumInfo-data {
+  padding: 20px;
+}
+.forumInfo-data-user {
+  line-height: 22px;
+  font-weight: 700;
+  color: #999;
+  display: flex;
+}
+.forumInfo-data-user-time {
+  font-weight: 700;
+  line-height: 24px;
+  color: #999;
+  text-align: right;
+  flex: 1;
+}
+.forumInfo-data-title {
+  margin-top: 15px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  color: #000;
+}
+.forumInfo-data-msg {
+  margin-top: 10px;
+  line-height: 26px;
+}
+.forumInfo-data-bottom {
+  margin-top: 10px;
+  font-size: 12px;
+  display: flex;
+}
+.forumInfo-data-bottom-tag {
+  padding: 0 10px;
+  background-color: #f9f9f9;
+  color: #999;
+  line-height: 24px;
+  margin-right: 8px;
+}
+.forumInfo-data-bottom-blank {
+  flex: 1;
+}
+.forumInfo-data-bottom-icon {
+  font-size: 16px;
+  margin-right: 16px;
+  cursor: pointer;
+}
+.forumInfo-comment {
+  display: flex;
+}
+.forumInfo-comment-form {
+  width: 100%;
+  position: relative;
+}
+.forumInfo-comment-form .my-editor {
+  border: 1px solid #e8e8e8;
+  height: 132px;
+  padding-bottom: 32px;
+}
+.forumInfo-comment-form .bf-content {
+  height: 60px;
+  padding-bottom: 0;
+}
+.forumInfo-comment-form-btn {
+  width: 100%;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  border-top: 1px solid #e8e8e8;
+  position: absolute;
+  bottom: 24px;
+}
+
+.forumInfo-commentList-item {
+  padding: 0 8px;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 16px;
+  padding-bottom: 30px;
+  position: relative;
+}
+
+.forumInfo-commentList-item-header {
+  font-size: 16px;
+  border-bottom: 1px solid #e8e8e8;
+  display: flex;
+  line-height: 40px;
+}
+
+.forumInfo-commentList-item-header-user {
+  flex: 1;
+}
+
+.forumInfo-commentList-item-con {
+  padding: 10px 0;
+}
+
+.forumInfo-commentList-item-del {
+  font-size: 16px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
 }
