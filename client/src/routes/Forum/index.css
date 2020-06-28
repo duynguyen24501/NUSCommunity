@@ -1,0 +1,126 @@
+.forum {
+  display: flex;
+}
+.forum-add {
+  width: 260px;
+}
+.forum-add-form {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+.forum-add-form .ant-input {
+  width: 200px;
+}
+.forum-add-form-search {
+  margin-right: 0 !important;
+}
+.forum-add-btn {
+  margin-left: 10px;
+  color: #999;
+  border: 1px solid #e8e8e8;
+  line-height: 38px;
+  display: block;
+  text-align: center;
+  font-weight: bolder;
+}
+.forum-list {
+  flex: 1;
+}
+.forum-list-title {
+  border: 1px solid #e8e8e8;
+  height: 30px;
+  padding-left: 10px;
+  font-weight: bolder;
+  line-height: 28px;
+}
+.forum-list-item {
+  border: 1px solid #e8e8e8;
+  border-top: none;
+  padding: 10px;
+}
+.forum-list-item-title {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 300;
+}
+.forum-list-item-msg {
+  margin-top: 10px;
+  line-height: 22px;
+  color: #999;
+}
+.forum-list-item-user {
+  margin-top: 10px;
+  line-height: 22px;
+  font-weight: 700;
+  color: #999;
+}
+.forum-list-item-bottom {
+  margin-top: 10px;
+  font-size: 12px;
+  display: flex;
+}
+.forum-list-item-bottom-tag {
+  padding: 0 10px;
+  background-color: #f9f9f9;
+  color: #999;
+  line-height: 24px;
+}
+.forum-list-item-bottom-time {
+  font-weight: 700;
+  line-height: 24px;
+  color: #999;
+  flex: 1;
+  text-align: right;
+}
+.forum-form {
+  width: 100%;
+  position: relative;
+}
+.forum-form .my-editor {
+  border: 1px solid #d9d9d9;
+  padding-bottom: 32px;
+}
+.forum-form-btn {
+  position: absolute;
+  border-top: 1px solid #d9d9d9;
+  bottom: 24px;
+  width: 100%;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+.forum-form-btn:hover {
+  color: #000;
+}
+.forum-form-tag {
+  display: flex;
+}
+.forum-form-tag-msg {
+  color: #000;
+  font-weight: 600;
+}
+.forum-form-tag-item {
+  padding: 0 10px;
+  background-color: #f9f9f9;
+  color: #999;
+  line-height: 24px;
+  display: inline-block;
+  margin: 0 5px;
+}
+.forum-form-tag-item-remove {
+  margin-left: 5px;
+  cursor: pointer;
+}
+.forum-form-tag-input {
+  width: 200px;
+  border: none;
+}
+.forum-form-tag-input:focus {
+  border: none;
+  box-shadow: none;
+}
+.forum-form-tag-icon {
+  font-size: 20px;
+  cursor: pointer;
+}

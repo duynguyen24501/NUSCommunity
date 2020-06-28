@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Router from 'next/router'
 import { Form, Input, Button, Row, Col } from "antd";
-import icon from "../assets/favicon.ico";
-import "../css/Reset.css";
-import Session from '../utils/session';
+import icon from "../../assets/favicon.ico";
+import "./index.css";
+import Session from '../../utils/session';
 
 
   // const onFinish = (values) => {

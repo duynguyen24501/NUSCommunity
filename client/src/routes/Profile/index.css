@@ -1,0 +1,78 @@
+.profile-bar {
+  background-color: #007bff;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.profile-bar h1 {
+  color: #fff;
+  font-weight: bolder;
+}
+
+.profile-center {
+  padding: 24px 0px;
+  background-color: #f8f9fa;
+  line-height: 38px;
+  text-align: center;
+  display: flex;
+  font-weight: bolder;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-center-back {
+  flex: 1;
+  margin: 0 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-center-reset {
+  flex: 1;
+  margin: 0 15px;
+  background: #28a745;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.profile-center-reset:hover {
+  color: #fff;
+}
+
+.profile-center-del {
+  flex: 1;
+  margin: 0 15px;
+  background: #dc3545;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.profile-con {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 4px;
+}
+
+.profile-con-title {
+  padding: 0 20px;
+  line-height: 60px;
+  font-size: 24px;
+  font-weight: bold;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.profile-con-form {
+  width: 100%;
+  padding: 20px;
+}
+
+.profile-con-form .my-editor {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.profile-con-form-label {
+  line-height: 24px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #000;
+}

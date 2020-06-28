@@ -3,9 +3,9 @@ import { Link } from "react-router-dom"
 import Router from 'next/router'
 //import Link from 'next/link'
 import { Form, Input, Button, Row, Col } from "antd";
-import icon from "../assets/favicon.ico";
-import "../css/Register.css"
-import Session from '../utils/session'
+import icon from "../../assets/favicon.ico";
+import "./index.css"
+import Session from '../../utils/session'
 
 /*
 const onFinish = (values) => {
@@ -161,12 +161,6 @@ class Register extends React.Component {
                                 <Form
                                     name="normal_register"
                                     className="register-right-form"
-                                //onSubmit={this.handleSignUp}
-                                // onFinish={(values) => {
-                                //     console.log(values);
-                                //     alert("A verification link has been sent to your email");
-                                //     window.location.href = "/login";
-                                //   }}
                                 >
                                     <Form.Item
                                         name="email"

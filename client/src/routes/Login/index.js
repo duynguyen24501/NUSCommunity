@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Router from 'next/router'
-import { Form, Input, Button, message } from "antd";
-import icon from "../assets/favicon.ico";
-import "../css/Login.css";
-import Session from '../utils/session';
+import { Form, Input, Button, message} from "antd";
+import icon from "../../assets/favicon.ico";
+import "./index.css";
+import Session from '../../utils/session';
 
 // const onFinish = (values) => {
 //   console.log(values);
@@ -90,7 +90,12 @@ class Login extends React.Component {
     .then(res => res.json())
     .then(response => {
       if (response.loggedin) {
-        window.location.href = "/home";
+        //message.success("login success~");
+        //window.location.href = "/index";
+        const { history } = this.props;
+        message.success("login success~");
+        history.push("/index");
+        //response.redirect('/home');
         //Router.push(`/`)
       } else if (response.message) {
 
@@ -111,6 +116,7 @@ class Login extends React.Component {
       })
     })
   }
+
   render() {
       const alert = (this.state.message === null) ? <div/> : <div className="alert-style" role="alert">{this.state.message}</div>
       return (
@@ -123,6 +129,7 @@ class Login extends React.Component {
               <Form
                 name="normal_login"
                 className="login-con-form"
+                // onFinish={this.onFinish}
               >
                 <Form.Item
                   name="email"

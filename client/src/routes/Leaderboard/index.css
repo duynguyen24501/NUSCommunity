@@ -1,0 +1,13 @@
+.leaderboard-bar {
+  background-color: #ffc107;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-bar h1 {
+  color: #fff;
+  font-weight: bolder;
+}
+.leaderboard-table {
+  margin-top: 20px;
+}

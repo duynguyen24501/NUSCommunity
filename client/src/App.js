@@ -6,25 +6,25 @@ import {
   Redirect,
 } from "react-router-dom";
 import "./App.css";
+import MainLayouts from "./layouts/MainLayouts";
 import Reset from "./routes/Reset";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
-import Home from "./routes/Home";
-//import CheckEmail from "./routes/check-email";
 
-const App = () => {
-  return (
-    <Router>
-      <Switch>
-        <Route path={"/reg"} component={Register} />
-        <Route path={"/login"} component={Login} />
-        <Route path={"/reset"} component={Reset} />
-        <Route path={"/home"} component={Home} />
-        {/* <Route path={"/check-email"} component={CheckEmail}/> */}
-        <Redirect from="/" to={"/login"} />
-      </Switch>
-    </Router>
-  );
-};
-
-export default App;
+export default class App extends React.Component {
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route path={"/reg"} component={Register} />
+          <Route path={"/login"} component={Login} />
+          <Route path={"/reset"} component={Reset} />
+          <Route path={"/index"}>
+            <MainLayouts />
+          </Route>
+          <Redirect from="/" to={"/login"} />
+        </Switch>
+      </Router>
+    );
+  }
+}

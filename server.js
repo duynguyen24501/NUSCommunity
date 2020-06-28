@@ -10,9 +10,12 @@ const nodemailer = require("nodemailer");
 const nodemailerSmtpTransport = require("nodemailer-smtp-transport");
 const nodemailerDirectTransport = require("nodemailer-direct-transport");
 
-
 let nodemailerTransport = nodemailerDirectTransport();
-if (process.env.EMAIL_SERVER && process.env.EMAIL_USERNAME && process.env.EMAIL_PASSWORD) {
+if (
+  process.env.EMAIL_SERVER &&
+  process.env.EMAIL_USERNAME &&
+  process.env.EMAIL_PASSWORD
+) {
   nodemailerTransport = nodemailerSmtpTransport({
     host: process.env.EMAIL_SERVER,
     port: process.env.EMAIL_PORT || 25,
@@ -36,9 +39,8 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-app.get('/api/hello', (req, res) => {
-  res.send({ express: 'Hello From Express' });
+app.get("/api/hello", (req, res) => {
+  res.send({ express: "Hello From Express" });
 });
 
 app.post("/auth/login", async (req, res) => {
@@ -108,7 +110,15 @@ app.post("/auth/signup", async (req, res) => {
       const results = await addUser(email, hash, username);
       if (results && results.length > 0) {
         bcrypt.hash(email + hash, saltRounds).then(function (hash) {
-          sendVerificationEmail(email, "http://" + req.headers.host + "/auth/verify?email=" + email + "&hash=" + hash);
+          sendVerificationEmail(
+            email,
+            "http://" +
+              req.headers.host +
+              "/auth/verify?email=" +
+              email +
+              "&hash=" +
+              hash
+          );
         });
         return res.json({ email: email });
       } else {
@@ -137,8 +147,8 @@ function sendVerificationEmail(email, url) {
     {
       to: email,
       from: process.env.EMAIL_FROM,
-      subject: "Verification",
-      text: `Click on this link to verify:\n\n${url}\n\n`,
+      subject: "NUSCommunity Verification",
+      text: `Thank you for your interest in NUSCommunity. Click on this link to verify:\n\n${url}\n\n`,
       html: `<p>Click on this link to verify:</p><p>${url}</p>`,
     },
     (err) => {
@@ -161,13 +171,19 @@ app.get("/auth/verify", async (req, res) => {
           if (response == true) {
             const results = await verifyUsers(email);
             if (results.length > 0) {
-                res.sendFile(path.join(__dirname + "/client/public/success-verification.html"));
-                app.use(express.static(path.join(__dirname, "client")));
-                return;
-                //return res.json({ message: "Email verified successfully. You can sign in now." });
-                //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
+              res.sendFile(
+                path.join(
+                  __dirname + "/client/public/success-verification.html"
+                )
+              );
+              app.use(express.static(path.join(__dirname, "client/public")));
+              return;
+              //return res.json({ message: "Email verified successfully. You can sign in now." });
+              //return res.redirect(`/callback?message=Email verified successfully. You can sign in now.`)
             } else {
-                return res.redirect(`/callback?message=Email already verified. You can sign in now.`)
+              return res.redirect(
+                `/callback?message=Email already verified. You can sign in now.`
+              );
             }
           }
         });
@@ -202,7 +218,13 @@ app.post("/auth/reset", async (req, res) => {
       if (results && results.length > 0) {
         bcrypt.hash(email + hash, saltRounds).then(function (hash) {
           sendVerificationEmail(
-            email, "http://" + req.headers.host + "/auth/verify?email=" + email + "&hash=" + hash
+            email,
+            "http://" +
+              req.headers.host +
+              "/auth/verify?email=" +
+              email +
+              "&hash=" +
+              hash
           );
         });
         return res.json({ email: email });
