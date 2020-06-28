@@ -7,7 +7,7 @@ import {
   LogoutOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import Home from "../routes/Home";
+import Home from "../routes/Home/Home";
 import Keep from "../routes/Keep";
 import Leaderboard from "../routes/Leaderboard";
 import Profile from "../routes/Profile";
