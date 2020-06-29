@@ -10,6 +10,13 @@ const nodemailer = require("nodemailer");
 const nodemailerSmtpTransport = require("nodemailer-smtp-transport");
 const nodemailerDirectTransport = require("nodemailer-direct-transport");
 
+var db_connected = true;
+pool.getConnection(function(err, connection) {
+  if(connection.state === 'disconnected'){
+    db_connected = false;
+  }
+});
+
 let nodemailerTransport = nodemailerDirectTransport();
 if (
   process.env.EMAIL_SERVER &&
@@ -26,6 +33,7 @@ if (
     },
   });
 }
+
 
 var app = express();
 app.use(
@@ -121,9 +129,11 @@ app.post("/auth/signup", async (req, res) => {
           );
         });
         return res.json({ email: email });
-      } else {
+      } else if (db_connected) {
         console.log("email exists already!!!");
         return res.json({ message: "User already exists with email " + email });
+      } else {
+        return res.json({ message:"Database server not connected"});
       }
     });
   } else {
@@ -148,8 +158,8 @@ function sendVerificationEmail(email, url) {
       to: email,
       from: process.env.EMAIL_FROM,
       subject: "NUSCommunity Verification",
-      text: `Thank you for your interest in NUSCommunity. Click on this link to verify:\n\n${url}\n\n`,
-      html: `<p>Click on this link to verify:</p><p>${url}</p>`,
+      text: `Click on this link to verify:\n\n${url}\n\n`,
+      html: `<p>Thank you for your interest in NUSCommunity. Click on this link to verify:</p><p>${url}</p>`,
     },
     (err) => {
       if (err) {
