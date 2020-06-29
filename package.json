@@ -17,6 +17,7 @@
     "nodemailer": "^6.4.10",
     "nodemailer-direct-transport": "^3.3.2",
     "nodemailer-smtp-transport": "^2.7.4",
+    "nodemon": "^2.0.4",
     "path": "^0.12.7"
   },
   "devDependencies": {
