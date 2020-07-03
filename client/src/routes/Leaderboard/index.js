@@ -1,5 +1,5 @@
 import React from "react";
-// import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
+import EmojiObjectsIcon from "@material-ui/icons/EmojiObjects";
 import { Table } from "antd";
 import "./index.css";
 

@@ -6,7 +6,7 @@ import {
   LockOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { Form, Input } from "antd";
+import { Form } from "antd";
 import BraftEditor from "braft-editor";
 import "braft-editor/dist/index.css";
 import "./index.css";
@@ -14,17 +14,23 @@ import "./index.css";
 
 export default class Profile extends React.Component {
   formRef = React.createRef();
+  state = {
+    info: {
+      name: "abc",
+      email: "e12398132@u.nus.edu",
+      bio: "",
+    },
+  };
+
+  onFinish = (values) => {
+    // console.log(values);
+  };
 
   render() {
     const { history } = this.props;
+    const { info } = this.state;
     return (
       <div className="profile">
-        <div className="profile-bar">
-          <h1>
-            <UserOutlined className="mr-8" />
-            Edit Profile
-          </h1>
-        </div>
         <div className="profile-center">
           <div
             onClick={() => {
@@ -33,7 +39,7 @@ export default class Profile extends React.Component {
             className="profile-center-back"
           >
             <ArrowLeftOutlined className="mr-8" />
-            Back To Dashboard
+            Back
           </div>
           <Link className="profile-center-reset" to="/reset">
             <LockOutlined className="mr-8" />
@@ -49,35 +55,19 @@ export default class Profile extends React.Component {
           <Form
             name="normal_add"
             ref={this.formRef}
+            onFinish={this.onFinish}
             className="profile-con-form"
+            initialValues={{
+              bio: BraftEditor.createEditorState(info.bio),
+            }}
           >
             <div className="profile-con-form-label">Name</div>
-            <Form.Item
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: "please enter your name!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+            <Form.Item>{info.name}</Form.Item>
             <div className="profile-con-form-label">Email</div>
-            <Form.Item
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: "please enter your email!",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+            <Form.Item>{info.email}</Form.Item>
             <div className="profile-con-form-label">Bio</div>
             <Form.Item
-              name="msg"
+              name="bio"
               validateTrigger="onBlur"
               rules={[
                 {
@@ -92,6 +82,14 @@ export default class Profile extends React.Component {
             >
               <BraftEditor language="en" className="my-editor" />
             </Form.Item>
+            <div
+              onClick={() => {
+                this.formRef.current.submit();
+              }}
+              className="profile-con-form-btn"
+            >
+              Save
+            </div>
           </Form>
         </div>
       </div>

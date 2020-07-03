@@ -7,12 +7,14 @@ import {
   LogoutOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import Home from "../routes/Home/Home";
+import Home from "../routes/Home/Home.js";
 import Keep from "../routes/Keep";
 import Leaderboard from "../routes/Leaderboard";
 import Profile from "../routes/Profile";
 import Forum from "../routes/Forum";
 import ForumAdd from "../routes/Forum/Add";
+import ForumEdit from "../routes/Forum/Edit";
+import ForumInfo from "../routes/Forum/Info";
 import icon from "../assets/favicon.ico";
 import "./MainLayouts.css";
 
@@ -59,7 +61,7 @@ class MainLayouts extends React.Component {
           <Dropdown overlay={menu}>
             <span className="main-header-user">
               <UserOutlined className="mr-8" />
-              Admin <DownOutlined />
+              abc <DownOutlined />
             </span>
           </Dropdown>
         </div>
@@ -77,7 +79,9 @@ class MainLayouts extends React.Component {
         </div>
         <>
           <Switch>
+            <Route path={"/index/forum/edit"} component={ForumEdit} />
             <Route path={"/index/forum/add"} component={ForumAdd} />
+            <Route path={"/index/forum/info"} component={ForumInfo} />
             <Route path={"/index/forum"} component={Forum} />
             <Route path={"/index/home"} component={Home} />
             <Route path={"/index/keep"} component={Keep} />
@@ -86,7 +90,6 @@ class MainLayouts extends React.Component {
             <Redirect from="/index" to={"/index/home"} />
           </Switch>
         </>
-        <div className="main-footer">Copyright ⓒ NUSCommunity</div>
       </div>
     );
   }

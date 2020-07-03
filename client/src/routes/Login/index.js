@@ -14,7 +14,7 @@ import Session from '../../utils/session';
 
 class Login extends React.Component {
   static async getInitialProps({req, res}) {
-
+    console.log("Login triggers here!");
     let props = {
       session: ''
     }
@@ -52,16 +52,20 @@ class Login extends React.Component {
     this.setState({
       email: event.target.value.trim()
     })
+    console.log("Before email change triggers here!");
   }
 
+  
   handlePasswordChange(event) {
     this.setState({
       password: event.target.value.trim()
     })
+    console.log("Password change here!");
   }
   
   handleLogin(event) {
     event.preventDefault()
+    console.log("Login triggers here!");
 
     this.setState({
       message: null

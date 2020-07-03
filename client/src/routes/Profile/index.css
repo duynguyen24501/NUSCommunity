@@ -64,10 +64,18 @@
 .profile-con-form {
   width: 100%;
   padding: 20px;
+  position: relative;
 }
 
 .profile-con-form .my-editor {
   border: 1px solid rgba(0, 0, 0, 0.125);
+  height: 232px;
+  padding-bottom: 32px;
+}
+
+.profile-con-form .bf-content {
+  height: 105px;
+  padding-bottom: 0;
 }
 
 .profile-con-form-label {
@@ -75,4 +83,15 @@
   margin-bottom: 8px;
   font-size: 16px;
   color: #000;
+}
+
+.profile-con-form-btn {
+  position: absolute;
+  border-top: 1px solid #d9d9d9;
+  bottom: 44px;
+  width: 1056px;
+  line-height: 32px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
 }
