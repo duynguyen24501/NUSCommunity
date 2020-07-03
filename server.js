@@ -54,6 +54,7 @@ app.get("/api/hello", (req, res) => {
 app.post("/auth/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  
   console.log(email + " " + password);
 
   if (email && password) {
@@ -111,6 +112,7 @@ app.post("/auth/signup", async (req, res) => {
   const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
   const username = req.body.username;
+  if (password.length < 6) return res.json({message: "Password has to be as least 6 characters"});
   console.log(email + "  " + password + " " + username);
 
   if (email && password && username) {
@@ -221,6 +223,7 @@ async function verifyUsers(email) {
 app.post("/auth/reset", async (req, res) => {
   const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
+  if (password.length < 6) return res.json({message: "Password has to be as least 6 characters"});
   console.log(email + " " + password);
   if (email && password) {
     bcrypt.hash(password, saltRounds).then(async function (hash) {
@@ -237,6 +240,15 @@ app.post("/auth/reset", async (req, res) => {
               hash
           );
         });
+        
+        try {
+          const results = await pool.query(
+            `UPDATE users SET verified=false WHERE email='${email}';`
+          );
+        } catch (e) {
+          console.error(e);
+        }
+
         return res.json({ email: email });
       } else {
         return res.json({ message: "User does not exist with email " + email });

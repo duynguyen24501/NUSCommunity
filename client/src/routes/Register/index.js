@@ -180,6 +180,12 @@ class Register extends React.Component {
                                                 required: true,
                                                 message: "Please input your password!",
                                             },
+                                            ({ getFieldValue }) => ({
+                                                validator(rule, value) {
+                                                    if (value.length<6 && value.length>0) return Promise.reject("Password has to be at least 6 characters");          
+                                                    return Promise.resolve();
+                                                },
+                                            })
                                         ]}
                                     >
                                         <Input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange} />
@@ -194,6 +200,7 @@ class Register extends React.Component {
                                             },
                                             ({ getFieldValue }) => ({
                                                 validator(rule, value) {
+                                                    if (value.length<6 && value.length>0) return Promise.reject("Password has to be at least 6 characters");
                                                     if (!value || getFieldValue("password") === value) {
                                                         return Promise.resolve();
                                                     }
