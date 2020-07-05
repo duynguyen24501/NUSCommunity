@@ -14,7 +14,6 @@ import Session from '../../utils/session';
 
 class Login extends React.Component {
   static async getInitialProps({req, res}) {
-    console.log("Login triggers here!");
     let props = {
       session: ''
     }

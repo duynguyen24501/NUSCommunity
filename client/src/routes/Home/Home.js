@@ -5,6 +5,8 @@ import device from './Device';
 import Result from './Result';
 import NotFound from './NotFound';
 import './Home.sass'
+import Router from 'next/router'
+import Session from '../../utils/session'
 
 const AppTitle = styled.h1`
   
@@ -63,6 +65,7 @@ const WeatherWrapper = styled.div`
 `;
 
 class Home extends React.Component {
+  
   state = {
     value: '',
     weatherInfo: null,
@@ -157,27 +160,25 @@ class Home extends React.Component {
 
   render() {
     const { value, weatherInfo, error } = this.state;
-    
-    return (
-        <div class='weather-app' id="weather-app">
-        <AppTitle showLabel={(weatherInfo || error) && true}>Home</AppTitle>
-       
-        <WeatherWrapper>
-          <AppTitle secondary showResult={(weatherInfo || error) && true}>
-            Homepage
-          </AppTitle>
-          <SearchCity
-            value={value}
-            showResult={(weatherInfo || error) && true}
-            change={this.handleInputChange}
-            submit={this.handleSearchCity}
-          />
-          {weatherInfo && <Result weather={weatherInfo} />}
-          {error && <NotFound error={error} />}
-        </WeatherWrapper>
-        </div>
-    
-    );
+      return (
+          <div class='weather-app' id="weather-app">
+          <AppTitle showLabel={(weatherInfo || error) && true}>Home</AppTitle>
+        
+          <WeatherWrapper>
+            <AppTitle secondary showResult={(weatherInfo || error) && true}>
+              Homepage
+            </AppTitle>
+            <SearchCity
+              value={value}
+              showResult={(weatherInfo || error) && true}
+              change={this.handleInputChange}
+              submit={this.handleSearchCity}
+            />
+            {weatherInfo && <Result weather={weatherInfo} />}
+            {error && <NotFound error={error} />}
+          </WeatherWrapper>
+          </div> 
+      );
   }
 }
 
