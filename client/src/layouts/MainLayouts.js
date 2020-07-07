@@ -19,6 +19,30 @@ import icon from "../assets/favicon.ico";
 import "./MainLayouts.css";
 
 class MainLayouts extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loggedin: false
+    }
+  }
+
+  async componentDidMount() {
+    this.getProfile()
+  }
+
+  getProfile() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.loggedin) return;
+      this.setState({
+        loggedin: response.loggedin
+      })
+      console.log(this.state.loggedin);
+    })
+  }
   render() {
     const { location } = this.props;
     const menu = (
@@ -53,45 +77,51 @@ class MainLayouts extends React.Component {
         link: "/index/leaderboard",
       },
     ];
-    return (
-      <div className="main">
-        <div className="main-header">
-          <img src={icon} alt="" />
-          <span className="main-header-title">NUSCommunity</span>
-          <Dropdown overlay={menu}>
-            <span className="main-header-user">
-              <UserOutlined className="mr-8" />
-              abc <DownOutlined />
-            </span>
-          </Dropdown>
+    if (this.state.loggedin) { 
+      return (
+        <div className="main">
+          <div className="main-header">
+            <img src={icon} alt="" />
+            <span className="main-header-title">NUSCommunity</span>
+            <Dropdown overlay={menu}>
+              <span className="main-header-user">
+                <UserOutlined className="mr-8" />
+                abc <DownOutlined />
+              </span>
+            </Dropdown>
+          </div>
+          <div className="main-nav">
+            {navList.map((item) => (
+              <div
+                key={item.link}
+                className={`main-nav-item ${
+                  location.pathname === item.link ? "main-nav-item-select" : ""
+                }`}
+              >
+                <Link to={item.link}>{item.name}</Link>
+              </div>
+            ))}
+          </div>
+          <>
+            <Switch>
+              <Route path={"/index/forum/edit"} component={ForumEdit} />
+              <Route path={"/index/forum/add"} component={ForumAdd} />
+              <Route path={"/index/forum/info"} component={ForumInfo} />
+              <Route path={"/index/forum"} component={Forum} />
+              <Route path={"/index/home"} component={Home} />
+              <Route path={"/index/keep"} component={Keep} />
+              <Route path={"/index/leaderboard"} component={Leaderboard} />
+              <Route path={"/index/profile"} component={Profile} />
+              <Redirect from="/index" to={"/index/home"} />
+            </Switch>
+          </>
         </div>
-        <div className="main-nav">
-          {navList.map((item) => (
-            <div
-              key={item.link}
-              className={`main-nav-item ${
-                location.pathname === item.link ? "main-nav-item-select" : ""
-              }`}
-            >
-              <Link to={item.link}>{item.name}</Link>
-            </div>
-          ))}
-        </div>
-        <>
-          <Switch>
-            <Route path={"/index/forum/edit"} component={ForumEdit} />
-            <Route path={"/index/forum/add"} component={ForumAdd} />
-            <Route path={"/index/forum/info"} component={ForumInfo} />
-            <Route path={"/index/forum"} component={Forum} />
-            <Route path={"/index/home"} component={Home} />
-            <Route path={"/index/keep"} component={Keep} />
-            <Route path={"/index/leaderboard"} component={Leaderboard} />
-            <Route path={"/index/profile"} component={Profile} />
-            <Redirect from="/index" to={"/index/home"} />
-          </Switch>
-        </>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div>Please Register and Login first!</div>
+      )
+   }
   }
 }
 export default withRouter(MainLayouts);

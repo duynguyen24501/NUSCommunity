@@ -269,5 +269,83 @@ async function updateUser(email, password) {
     console.error(e);
   }
 }
+
+////////////////////////////////////////////////////////////////
+// Sign-out
+app.get('/auth/signout', (req, res) => {
+  if (req.session && req.session.loggedin) {
+    req.session.destroy()
+    return res.json({message: "Logout successfully"})
+    //res.redirect(`/callback?message=Successfully signed out.`)
+  } else {
+    return res.json({message: "You need to login first"})
+    //res.redirect(`/callback?message=You need to login first.`)
+  }
+})
+
+///////////////////////////////////////////////////////////////
+// Get session of the user
+app.get('/auth/session', (req, res) => {
+  if (req.session) {
+    return res.json(req.session)
+  } else {
+    return res.status(403)
+  }
+})
+
+app.get('/auth/check-session', (req,res) => {
+  if (req.session && req.session.loggedin) {
+      return res.json({ 
+        loggedin: true
+      })
+  } else {
+      return res.json({
+        loggedin: false
+      })
+  }
+})
+  
+
+// Get the profile of the user
+app.get('/auth/profile', async (req, res) => {
+  if (req.session && req.session.loggedin) {
+    const results = await getUser(req.session.email)
+    if (results[0][0]) {
+      return res.json({
+        name: results[0][0].name || '',
+        address: results[0][0].address || ''
+      })
+    } else {
+      return res.status(500)
+    }
+  } else {
+    return res.status(403)
+  }
+})
+
+// Update new information of the user
+app.post('/auth/update', async (req, res) => {
+  if (req.session && req.session.loggedin) {
+    const results = await updateUser(req.body, req.session.email)
+    if (results && results.length > 0) {
+      return res.json({ok: true})
+    } else {
+      return res.status(500)
+    }
+  } else {
+    return res.status(403)
+  }
+})
+
+async function updateUser(body, email) {
+  try {
+    const results = await pool.query(`UPDATE users SET name='${body.name}', address='${body.address}' WHERE email='${email}';`)
+    return results
+  }catch(e){
+    console.error(e)
+  }
+}
+
+
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
