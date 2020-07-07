@@ -51,7 +51,6 @@ class Login extends React.Component {
     this.setState({
       email: event.target.value.trim()
     })
-    console.log("Before email change triggers here!");
   }
 
   
@@ -59,12 +58,10 @@ class Login extends React.Component {
     this.setState({
       password: event.target.value.trim()
     })
-    console.log("Password change here!");
   }
   
   handleLogin(event) {
     event.preventDefault()
-    console.log("Login triggers here!");
 
     this.setState({
       message: null
