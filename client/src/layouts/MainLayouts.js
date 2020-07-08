@@ -48,7 +48,7 @@ class MainLayouts extends React.Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <Link to="/login">
+          <Link to="/callback">
             <LogoutOutlined className="mr-8" /> Logout
           </Link>
         </Menu.Item>

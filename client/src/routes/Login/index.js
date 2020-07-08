@@ -6,11 +6,6 @@ import icon from "../../assets/favicon.ico";
 import "./index.css";
 import Session from '../../utils/session';
 
-// const onFinish = (values) => {
-//   console.log(values);
-//   message.success("login success~");
-//   window.location.href = "/home";
-// };
 
 class Login extends React.Component {
   static async getInitialProps({req, res}) {
@@ -71,7 +66,6 @@ class Login extends React.Component {
       this.setState({
         message: 'Email/Password is empty!'
       })
-
       return
     }
 
@@ -93,7 +87,7 @@ class Login extends React.Component {
         //message.success("login success~");
         //window.location.href = "/index";
         const { history } = this.props;
-        message.success("login success~");
+        message.success("Welcome to NUSCommunity~");
         history.push("/index");
         //response.redirect('/home');
         //Router.push(`/`)

@@ -10,6 +10,7 @@ import MainLayouts from "./layouts/MainLayouts";
 import Reset from "./routes/Reset";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
+import Callback from "./routes/Callback/callback.js";
 
 export default class App extends React.Component {
   render() {
@@ -19,6 +20,7 @@ export default class App extends React.Component {
           <Route path={"/reg"} component={Register} />
           <Route path={"/login"} component={Login} />
           <Route path={"/reset"} component={Reset} />
+          <Route path={"/callback"} component={Callback} />
           <Route path={"/index"}>
             <MainLayouts />
           </Route>
