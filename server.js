@@ -1,3 +1,4 @@
+// Declare necessary modules/packages/libraries
 var mysql = require("mysql");
 var express = require("express");
 var session = require("express-session");
@@ -10,6 +11,7 @@ const nodemailer = require("nodemailer");
 const nodemailerSmtpTransport = require("nodemailer-smtp-transport");
 const nodemailerDirectTransport = require("nodemailer-direct-transport");
 
+// Check MySQL connection 
 var db_connected = true;
 pool.getConnection(function(err, connection) {
   if(connection.state === 'disconnected'){
@@ -17,6 +19,7 @@ pool.getConnection(function(err, connection) {
   }
 });
 
+// Send email verification preprocess
 let nodemailerTransport = nodemailerDirectTransport();
 if (
   process.env.EMAIL_SERVER &&
@@ -34,7 +37,7 @@ if (
   });
 }
 
-
+// Calling express to write APIs
 var app = express();
 app.use(
   session({
@@ -47,10 +50,13 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Check 8080 server
 app.get("/api/hello", (req, res) => {
   res.send({ express: "Hello From Express" });
 });
 
+/////////////////////////////////////////////
+// Login APIs
 app.post("/auth/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -83,6 +89,7 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
+// Get particular user in database
 async function getUser(email) {
   try {
     const results = await pool.query(
@@ -94,20 +101,8 @@ async function getUser(email) {
   }
 }
 
-/*
-app.get("/home", function (req, res) {
-  if (req.session.loggedin) {
-    res.send("Welcome back, " + req.session.email + "!");
-  } else {
-    res.send("Please login to view this page!");
-  }
-  res.end();
-});
-*/
-
 ///////////////////////////////////////////////////////////////
-// API for registration
-
+// Registration APIs
 app.post("/auth/signup", async (req, res) => {
   const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
@@ -143,6 +138,7 @@ app.post("/auth/signup", async (req, res) => {
   }
 });
 
+// Add particular user in database
 async function addUser(email, password, username) {
   try {
     const results = await pool.query(
@@ -154,6 +150,7 @@ async function addUser(email, password, username) {
   }
 }
 
+// Sending email verification function
 function sendVerificationEmail(email, url) {
   nodemailer.createTransport(nodemailerTransport).sendMail(
     {
@@ -171,6 +168,8 @@ function sendVerificationEmail(email, url) {
   );
 }
 
+/////////////////////////////////////////////
+// Verification APIs
 app.get("/auth/verify", async (req, res) => {
   var email = req.query.email;
   var hash = req.query.hash;
@@ -209,6 +208,7 @@ app.get("/auth/verify", async (req, res) => {
   }
 });
 
+// Verify user for authentication
 async function verifyUsers(email) {
   try {
     const results = await pool.query(
@@ -220,6 +220,8 @@ async function verifyUsers(email) {
   }
 }
 
+/////////////////////////////////////////////
+// Reset password APIs
 app.post("/auth/reset", async (req, res) => {
   const email = req.body.email + "@u.nus.edu";
   const password = req.body.password;
@@ -259,6 +261,7 @@ app.post("/auth/reset", async (req, res) => {
   }
 });
 
+// Update particular user's password in database
 async function updateUser(email, password) {
   try {
     const results = await pool.query(
@@ -270,8 +273,8 @@ async function updateUser(email, password) {
   }
 }
 
-////////////////////////////////////////////////////////////////
-// Sign-out
+////////////////////////////////////////
+// Sign-out APIs
 app.get('/auth/signout', (req, res) => {
   if (req.session && req.session.loggedin) {
     req.session.destroy()
@@ -283,8 +286,8 @@ app.get('/auth/signout', (req, res) => {
   }
 })
 
-///////////////////////////////////////////////////////////////
-// Get session of the user
+////////////////////////////////////////
+// All users' session APIs
 app.get('/auth/session', (req, res) => {
   if (req.session) {
     return res.json(req.session)
@@ -293,27 +296,35 @@ app.get('/auth/session', (req, res) => {
   }
 })
 
+/////////////////////////////////////////////
+// Necessary users' session APIs
 app.get('/auth/check-session', (req,res) => {
   if (req.session && req.session.loggedin) {
-      return res.json({ 
-        loggedin: true
+    const results = await getUser(req.session.email)
+    if (results[0][0]) {
+      return res.json({
+        loggedin: true,
+        email: req.session.email,
+        username: results[0][0].username,
+        bio: results[0][0].bio || '',
       })
+    }
   } else {
       return res.json({
-        loggedin: false
+        loggedin: false,
       })
   }
 })
   
-
-// Get the profile of the user
+//////////////////////////////////////////////
+// PROFILE APIs
 app.get('/auth/profile', async (req, res) => {
   if (req.session && req.session.loggedin) {
     const results = await getUser(req.session.email)
     if (results[0][0]) {
       return res.json({
-        name: results[0][0].name || '',
-        address: results[0][0].address || ''
+        username: results[0][0].username || '',
+        // address: results[0][0].address || ''
       })
     } else {
       return res.status(500)
@@ -323,6 +334,7 @@ app.get('/auth/profile', async (req, res) => {
   }
 })
 
+//////////////////////////////////////////////
 // Update new information of the user
 app.post('/auth/update', async (req, res) => {
   if (req.session && req.session.loggedin) {

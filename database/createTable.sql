@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(65) NOT NULL,
   `password` varchar(65) NOT NULL,
   `username` varchar(65),
-  `address` varchar(250),
+  `bio` varchar(500),
   `verified` BOOLEAN NOT NULL DEFAULT false,
   `modifyTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

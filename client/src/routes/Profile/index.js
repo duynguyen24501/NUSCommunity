@@ -14,13 +14,45 @@ import "./index.css";
 
 export default class Profile extends React.Component {
   formRef = React.createRef();
-  state = {
-    info: {
-      name: "abc",
-      email: "e12398132@u.nus.edu",
-      bio: "",
-    },
-  };
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      loggedin: false,
+      email:'',
+      username: '',
+      bio:''
+    }
+  }
+
+  async componentDidMount() {
+    this.getProfile()
+  }
+
+  getProfile() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.loggedin) return;
+      this.setState({
+        loggedin: response.loggedin,
+        email: response.email,
+        username: response.username,
+        bio: response.bio
+      })
+      console.log(this.state.loggedin);
+      console.log(this.state.username);
+    })
+  }
+  // state = {
+  //   info: {
+  //     name: "abc",
+  //     email: "e12398132@u.nus.edu",
+  //     bio: "",
+  //   },
+  // };
 
   onFinish = (values) => {
     // console.log(values);
@@ -58,13 +90,13 @@ export default class Profile extends React.Component {
             onFinish={this.onFinish}
             className="profile-con-form"
             initialValues={{
-              bio: BraftEditor.createEditorState(info.bio),
+              bio: BraftEditor.createEditorState(this.state.bio),
             }}
           >
             <div className="profile-con-form-label">Name</div>
-            <Form.Item>{info.name}</Form.Item>
+            <Form.Item>{this.state.username}</Form.Item>
             <div className="profile-con-form-label">Email</div>
-            <Form.Item>{info.email}</Form.Item>
+            <Form.Item>{this.state.email}</Form.Item>
             <div className="profile-con-form-label">Bio</div>
             <Form.Item
               name="bio"
