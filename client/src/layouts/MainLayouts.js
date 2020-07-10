@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, Redirect, Link, withRouter } from "react-router-dom";
-import { Menu, Dropdown } from "antd";
+import { Menu, Dropdown, message } from "antd";
 import {
   DownOutlined,
   UserOutlined,
@@ -22,7 +22,8 @@ class MainLayouts extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loggedin: false
+      loggedin: false,
+      username: ''
     }
   }
 
@@ -36,13 +37,20 @@ class MainLayouts extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      if (!response.loggedin) return;
+      const { history } = this.props;
+      if (!response.loggedin) {
+        message.error('Please register and login first to access!')
+        history.push('/')
+      }
       this.setState({
-        loggedin: response.loggedin
+        loggedin: response.loggedin,
+        username: response.username
       })
-      console.log(this.state.loggedin);
+      //console.log(this.state.loggedin);
+      //console.log(this.state.username);
     })
   }
+
   render() {
     const { location } = this.props;
     const menu = (
@@ -77,7 +85,7 @@ class MainLayouts extends React.Component {
         link: "/index/leaderboard",
       },
     ];
-    if (this.state.loggedin) { 
+    //if (this.state.loggedin) { 
       return (
         <div className="main">
           <div className="main-header">
@@ -86,7 +94,7 @@ class MainLayouts extends React.Component {
             <Dropdown overlay={menu}>
               <span className="main-header-user">
                 <UserOutlined className="mr-8" />
-                abc <DownOutlined />
+                {this.state.username}<DownOutlined />
               </span>
             </Dropdown>
           </div>
@@ -117,11 +125,11 @@ class MainLayouts extends React.Component {
           </>
         </div>
       );
-    } else {
-      return (
-        <div>Please Register and Login first!</div>
-      )
-   }
+  //   } else {
+  //     return (
+  //       <div>Please Register and Login first!</div>
+  //     )
+  //  }
   }
 }
 export default withRouter(MainLayouts);

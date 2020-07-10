@@ -298,7 +298,7 @@ app.get('/auth/session', (req, res) => {
 
 /////////////////////////////////////////////
 // Necessary users' session APIs
-app.get('/auth/check-session', (req,res) => {
+app.get('/auth/check-session', async(req,res) => {
   if (req.session && req.session.loggedin) {
     const results = await getUser(req.session.email)
     if (results[0][0]) {
@@ -336,9 +336,9 @@ app.get('/auth/profile', async (req, res) => {
 
 //////////////////////////////////////////////
 // Update new information of the user
-app.post('/auth/update', async (req, res) => {
+app.post('/auth/updateProfile', async (req, res) => {
   if (req.session && req.session.loggedin) {
-    const results = await updateUser(req.body, req.session.email)
+    const results = await updateUserProfile(req.body, req.session.email)
     if (results && results.length > 0) {
       return res.json({ok: true})
     } else {
@@ -349,15 +349,43 @@ app.post('/auth/update', async (req, res) => {
   }
 })
 
-async function updateUser(body, email) {
+async function updateUserProfile(body, email) {
   try {
-    const results = await pool.query(`UPDATE users SET name='${body.name}', address='${body.address}' WHERE email='${email}';`)
+    const results = await pool.query(`UPDATE users SET bio='${body.bio}' WHERE email='${email}';`)
+    return results
+  } catch(e) {
+    console.error(e)
+  }
+}
+
+//////////
+// Delete account
+app.get('/auth/deleteAccount', async (req, res) => {
+  if (req.session && req.session.loggedin) {
+    //console.log("delete account backend here!")
+    const results = await deleteUsers(req.session.email)
+    if (results.length > 0) {
+      req.session.destroy()
+      return res.json({message: 'Account deleted successfully.'})
+     //res.redirect(`/callback?message=Account deleted successfully.`)
+    } else {
+      return res.json({message: 'There was some problem deleting your account.'})
+      //res.redirect(`/callback?message=There was some problem deleting your account.`)
+    }
+  } else {
+    return res.json({message: 'First Sign in to delete your account.'})
+    //res.redirect(`/callback?message=First Sign in to delete your account.`)
+  }
+})
+
+async function deleteUsers(email) {
+  try {
+    const results = await pool.query(`DELETE FROM users WHERE email='${email}';`)
     return results
   }catch(e){
     console.error(e)
   }
 }
-
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
