@@ -31,7 +31,7 @@ export default class Callback extends React.Component {
     return (
       <Result
         status="success"
-        title="Successfully verified!"
+        title="Success!"
         subTitle="Thank you for your interest !"
         extra={[
           <Button key="home" type="primary" href="/index/home">
