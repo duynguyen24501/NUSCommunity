@@ -82,7 +82,7 @@ class MainLayouts extends React.Component {
         link: "/index/forum",
       },
       {
-        name: "weather app",
+        name: "Weather App",
         link: "/index/weather",
       },
       {
