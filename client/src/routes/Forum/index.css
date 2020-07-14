@@ -16,12 +16,7 @@
 }
 .forum-add-btn {
   margin-left: 10px;
-  color: #999;
-  border: 1px solid #e8e8e8;
-  line-height: 38px;
-  display: block;
-  text-align: center;
-  font-weight: bolder;
+  width: 100%;
 }
 .forum-list {
   flex: 1;
@@ -54,13 +49,6 @@
   margin-top: 10px;
   font-size: 12px;
   display: flex;
-}
-.forum-list-item-bottom-tag {
-  padding: 0 10px;
-  background-color: #f9f9f9;
-  color: #999;
-  line-height: 24px;
-  margin-right: 8px;
 }
 .forum-list-item-bottom-edit {
   line-height: 24px;

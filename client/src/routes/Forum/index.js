@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { Empty, Form, Input, Button, Modal } from "antd";
+import { Empty, Form, Input, Button, Modal, Tag } from "antd";
 import {
   UserAddOutlined,
   SearchOutlined,
@@ -11,6 +11,8 @@ import "./index.css";
 
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
+
+const colors = ["magenta", "orange", "cyan", "purple"];
 
 export default class Forum extends React.Component {
   state = {
@@ -47,7 +49,7 @@ export default class Forum extends React.Component {
                 {item.title}
               </Link>
               <div className="forum-list-item-user">
-                <UserAddOutlined className="mr-8" />
+                <UserAddOutlined className="mr-8 blue" />
                 <span
                   onClick={() => {
                     this.setState({ visible: true });
@@ -58,10 +60,10 @@ export default class Forum extends React.Component {
                 </span>
               </div>
               <div className="forum-list-item-bottom">
-                {item.tags.map((res) => (
-                  <div key={res} className="forum-list-item-bottom-tag">
+                {item.tags.map((res, index) => (
+                  <Tag key={res} color={colors[index % 4]}>
                     {res}
-                  </div>
+                  </Tag>
                 ))}
                 <Link
                   to={`/index/forum/edit?id=${item.id}`}
@@ -97,9 +99,13 @@ export default class Forum extends React.Component {
               />
             </Form.Item>
           </Form>
-          <Link to="/index/forum/add" className="forum-add-btn">
+          <Button
+            type="primary"
+            href="/index/forum/add"
+            className="forum-add-btn"
+          >
             New Discussion
-          </Link>
+          </Button>
         </div>
         <Modal
           visible={visible}

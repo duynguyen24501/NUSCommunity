@@ -10,7 +10,7 @@ import MainLayouts from "./layouts/MainLayouts";
 import Reset from "./routes/Reset";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
-import Callback from "./routes/Callback/callback.js";
+import Callback from "./routes/Callback";
 
 export default class App extends React.Component {
   render() {

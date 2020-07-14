@@ -21,26 +21,9 @@
   font-weight: bolder;
   line-height: 50px;
 }
-.main-nav {
-  border-top: 1px solid #e8e8e8;
-  border-bottom: 1px solid #e8e8e8;
-  display: flex;
-  height: 40px;
-  line-height: 40px;
-  margin-bottom: 10px;
-}
-.main-nav-item {
-  line-height: 38px;
-  padding: 0 15px;
-}
-.main-nav-item a {
-  color: #999;
-}
-.main-nav-item-select {
-  background-color: #f9f9f9;
-}
-.main-nav-item-select a {
-  color: #000;
+.main-menu {
+  margin: 8px 0;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .main-footer {

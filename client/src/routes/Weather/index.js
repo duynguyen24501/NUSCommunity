@@ -1,15 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
-import SearchCity from './SearchCity';
-import device from './Device';
-import Result from './Result';
-import NotFound from './NotFound';
-import './Home.sass'
-import Router from 'next/router'
-import Session from '../../utils/session'
+import React from "react";
+import styled from "styled-components";
+import SearchCity from "./SearchCity";
+import device from "./Device";
+import Result from "./Result";
+import NotFound from "./NotFound";
+import "./Home.sass";
+import Router from "next/router";
+import Session from "../../utils/session";
 
 const AppTitle = styled.h1`
-  
   display: block;
   height: 64px;
   margin: 0;
@@ -65,20 +64,19 @@ const WeatherWrapper = styled.div`
 `;
 
 class Home extends React.Component {
-  
   state = {
-    value: '',
+    value: "",
     weatherInfo: null,
     error: false,
   };
 
-  handleInputChange = e => {
+  handleInputChange = (e) => {
     this.setState({
       value: e.target.value,
     });
   };
 
-  handleSearchCity = e => {
+  handleSearchCity = (e) => {
     e.preventDefault();
     const { value } = this.state;
     const APIkey = "84f0c05e16abc57b03ca8fa00b59f78e";
@@ -100,30 +98,42 @@ class Home extends React.Component {
       })
       .then(([data1, data2]) => {
         const months = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December',
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
         ];
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
         const currentDate = new Date();
         const date = `${days[currentDate.getDay()]} ${currentDate.getDate()} ${
           months[currentDate.getMonth()]
-          }`;
+        }`;
 
         console.log("Current day: " + currentDate.getDay());
         console.log("Current date: " + currentDate.getDate());
         console.log("Current month: " + currentDate.getMonth());
-        const sunset = new Date(data1.sys.sunset * 1000).toLocaleTimeString().slice(0, 5);
-        const sunrise = new Date(data1.sys.sunrise * 1000).toLocaleTimeString().slice(0, 5);
+        const sunset = new Date(data1.sys.sunset * 1000)
+          .toLocaleTimeString()
+          .slice(0, 5);
+        const sunrise = new Date(data1.sys.sunrise * 1000)
+          .toLocaleTimeString()
+          .slice(0, 5);
         console.log("Sunset: " + sunset);
         console.log("Sunrise: " + sunrise);
 
@@ -148,7 +158,7 @@ class Home extends React.Component {
           error: false,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
 
         this.setState({
@@ -160,25 +170,25 @@ class Home extends React.Component {
 
   render() {
     const { value, weatherInfo, error } = this.state;
-      return (
-          <div class='weather-app' id="weather-app">
-          <AppTitle showLabel={(weatherInfo || error) && true}>Home</AppTitle>
-        
-          <WeatherWrapper>
-            <AppTitle secondary showResult={(weatherInfo || error) && true}>
-              Homepage
-            </AppTitle>
-            <SearchCity
-              value={value}
-              showResult={(weatherInfo || error) && true}
-              change={this.handleInputChange}
-              submit={this.handleSearchCity}
-            />
-            {weatherInfo && <Result weather={weatherInfo} />}
-            {error && <NotFound error={error} />}
-          </WeatherWrapper>
-          </div> 
-      );
+    return (
+      <div className="weather-app" id="weather-app">
+        <AppTitle showLabel={(weatherInfo || error) && true}>Home</AppTitle>
+
+        <WeatherWrapper>
+          <AppTitle secondary showResult={(weatherInfo || error) && true}>
+            Homepage
+          </AppTitle>
+          <SearchCity
+            value={value}
+            showResult={(weatherInfo || error) && true}
+            change={this.handleInputChange}
+            submit={this.handleSearchCity}
+          />
+          {weatherInfo && <Result weather={weatherInfo} />}
+          {error && <NotFound error={error} />}
+        </WeatherWrapper>
+      </div>
+    );
   }
 }
 
