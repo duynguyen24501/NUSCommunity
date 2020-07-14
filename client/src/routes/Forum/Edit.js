@@ -40,6 +40,7 @@ export default class Edit extends React.Component {
 
   render() {
     const { data } = this.state;
+    //console.log(data);
     if (!data.id) {
       return <div />;
     }

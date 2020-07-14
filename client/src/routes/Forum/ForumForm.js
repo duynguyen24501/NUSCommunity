@@ -37,9 +37,11 @@ export default class ForumForm extends React.Component {
       title: values.title,
       msg: values.msg.toHTML(),
       user: "abc",
-      time: dayjs().valueOf(),
+      time:dayjs().valueOf(),
+      // time: dayjs().format('YYYY-MM-DD hh:mm:ss'),
       tags,
     };
+    console.log(params);
     onSubmit(params);
   };
 

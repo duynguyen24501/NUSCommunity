@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS `hashtag` (
+  `hashtag_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `web_id` INT NOT NULL,
+  `hashtag_name` varchar(50) NOT NULL,
+  `modifyTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
