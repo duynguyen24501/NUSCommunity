@@ -34,17 +34,17 @@ export default class Callback extends React.Component {
         title="Success!"
         subTitle="Thank you for your interest !"
         extra={[
-          <Button key="home" type="primary" href="/index/home">
-            Go Home
+          <Button key="home" type="primary" href="/login">
+            Go to Login
           </Button>,
-          <Button
-            key="back"
-            onClick={() => {
-              history.goBack();
-            }}
-          >
-            Go Back
-          </Button>,
+          // <Button
+          //   key="back"
+          //   onClick={() => {
+          //     history.goBack();
+          //   }}
+          // >
+          //   Go Back
+          // </Button>,
         ]}
       />
     );

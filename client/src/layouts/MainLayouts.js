@@ -29,7 +29,7 @@ class MainLayouts extends React.Component {
   }
 
   async componentDidMount() {
-    // this.getProfile()
+    this.getProfile()
   }
 
   getProfile() {
