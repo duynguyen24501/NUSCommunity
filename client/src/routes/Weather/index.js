@@ -176,7 +176,7 @@ class Home extends React.Component {
 
         <WeatherWrapper>
           <AppTitle secondary showResult={(weatherInfo || error) && true}>
-            Homepage
+            Weather App
           </AppTitle>
           <SearchCity
             value={value}
