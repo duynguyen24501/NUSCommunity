@@ -421,17 +421,17 @@ app.post('/forum/add-post', async (req,res) => {
 
   if (web_id & title && content && user_id && time_start) {
     const addPostResult = await addPost(web_id, title,content,user_id,time_start);
-    if (addPostResult[0][0]) {
-      var post_id = results[0][0].post_id;
+    if (addPostResult && addPostResult.length > 0) {
+      //var post_id = results[0][0].post_id;
       check_add_post = true;
     } else {
       check_add_hashtag = false;
     }
   }
 
-  if(tags) {
+  if (tags) {
     const addHashtagResult = await addHashtag(web_id, tags);
-    if (addHashtagResult[0][0]) {
+    if (addHashtagResult && addHashtagResult.length > 0) {
       check_add_hashtag = true;
     } else {
       check_add_hashtag = false;
@@ -448,14 +448,15 @@ app.post('/forum/add-post', async (req,res) => {
 async function getUsernameBasedOnEmail(email) {
   try {
     const result = await pool.query(
-      `SELECT id FROM users WHERE email = "${email}"`
+      `SELECT id FROM users WHERE email = "${email}";`
     );
+    return result;
   } catch (e) {
     console.error(e);
   }
 }
 
-async function addPost(title, content, username, time_start) {
+async function addPost(title, content, user_id, time_start) {
   try {
     const result = await pool.query(
       `INSERT INTO post (web_id, user_id, title, content, time_start) VALUES 
@@ -494,6 +495,7 @@ app.post('/forum/edit-post', async (req, res) => {
   const username = req.body.username;
   //const time_start = req.body.time_start;
   const tags = req.body.tags;
+
   var check_update_post;
   var check_update_hashtag;
 
@@ -520,16 +522,17 @@ app.post('/forum/edit-post', async (req, res) => {
   if (tags) {
     const deleteOldTagsResult = await deleteOldTags(web_id);
     const updateHashtagResult = await addHashtag(web_id, tags);
-    if (updateHashtagResult[0][0]) {
+    if (deleteOldTagsResult.length > 0 && updateHashtagResult.length > 0) {
       check_update_hashtag = true;
     } else {
       check_update_hashtag = false;
     }
   }
   
-  if (check_update_post && check_update_hashtag) return res.json({message: "Update post successfully!"})
-  else return res.json({message: "Fail to update post!"})
-
+  if (check_update_post && check_update_hashtag) {
+    return res.json({message: "Update post successfully!"})
+  }
+  return res.json({message: "Fail to update post!"})
 })
 
 async function getUsernameBasedOnWebID(web_id) {
@@ -538,8 +541,7 @@ async function getUsernameBasedOnWebID(web_id) {
       `SELECT username FROM users WHERE id = 
                                       (SELECT user_id 
                                       FROM post
-                                      WHERE web_id = "${web.id}")
-    );`);
+                                      WHERE web_id = "${web_id}");`);
     return results;
   } catch (e) {
     console.error(e);
@@ -549,7 +551,7 @@ async function getUsernameBasedOnWebID(web_id) {
 async function updatePost(web_id, title, content) {
   try {
     const results = await pool.query(
-      `UPDATE post SET title = "${title}" , content = "${content}"  WHERE web_id = "${web_id}");`
+      `UPDATE post SET title = "${title}", content = "${content}" WHERE web_id = "${web_id}";`
     );
     return results;
   } catch (e) {
@@ -560,7 +562,7 @@ async function updatePost(web_id, title, content) {
 async function deleteOldTags(web_id) {
   try {
     const results = await pool.query(
-      `DELETE FROM hashtag WHERE web_id="&{web_id}";`
+      `DELETE FROM hashtag WHERE web_id="${web_id}";`
     );
     return results;
   } catch (e) {
@@ -616,6 +618,8 @@ app.post('/forum/delete-post', async(req, res) => {
     const deletePostResult = await deletePost(web_id);
     if (deletePostResult.length > 0) {
       return res.json({message: "Delete post successfully"});
+    } else {
+      return res.json({message: "Error! Can't not delete post!"})
     }
   } else {
     return res.json({message: "Error! Can't not delete post!"})
