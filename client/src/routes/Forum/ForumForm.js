@@ -17,7 +17,9 @@ class ForumForm extends React.Component {
     this.state = {
       tags: [],
       tag: "",
+      email:"",
       username: "",
+      bio:""
     };
   }
 
@@ -28,10 +30,10 @@ class ForumForm extends React.Component {
         tags: data.tags,
       });
     }
-    this.getUsername();
+    this.getUserData();
   }
 
-  getUsername() {
+  getUserData() {
     fetch('/auth/check-session', {
       credentials: 'include'
     })
@@ -42,7 +44,9 @@ class ForumForm extends React.Component {
         this.props.history.push('/')
       }
       this.setState({
-        username: response.username
+        email: response.email,
+        username: response.username,
+        bio: response.bio
       })
     })
   }
@@ -58,12 +62,14 @@ class ForumForm extends React.Component {
       id: data.id ? data.id : dayjs().valueOf(),
       title: values.title,
       msg: values.msg.toHTML(),
-      user: this.state.username,
-      //time:dayjs().valueOf(),
-      time: dayjs().format('YYYY-MM-DD hh:mm:ss'),
-      tags,
+      email: this.state.email,
+      username: this.state.username,
+      bio: this.state.bio,
+      time:dayjs().valueOf(),
+      //time: dayjs.format('YYYY-MM-DD hh:mm:ss'),
+      tags: this.state.tags
     };
-
+    console.log(params.time);
     fetch('/forum/add-post', {
       method: 'POST',
       body: JSON.stringify(params),

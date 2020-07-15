@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS `post` (
   `title` varchar(100) NOT NULL,
   `content` varchar(500) NOT NULL,
   `num_likes` INT NOT NULL DEFAULT '0',
-  `time_start` timestamp NOT NULL,
+  `time_start` BIGINT NOT NULL,
   `modifyTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

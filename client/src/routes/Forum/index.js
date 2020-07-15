@@ -17,7 +17,7 @@ const colors = ["magenta", "orange", "cyan", "purple"];
 export default class Forum extends React.Component {
   state = {
     visible: false,
-    data: { name: "abc", email: "e12398132@u.nus.edu", bio: "some bio" },
+    data: { username: "", email: "", bio: "" },
   };
   onFinish = (values) => {
     console.log(values);
@@ -41,6 +41,7 @@ export default class Forum extends React.Component {
         <div className="forum-list">
           <div className="forum-list-title">DISCUSSIONS</div>
           {forumList.map((item) => (
+            data.username = item.username, data.email = item.email, data.bio = item.bio,
             <div key={item.time} className="forum-list-item">
               <Link
                 to={`/index/forum/info?id=${item.id}`}
@@ -56,7 +57,7 @@ export default class Forum extends React.Component {
                   }}
                   style={{ cursor: "pointer" }}
                 >
-                  {item.user}
+                  {item.username}
                 </span>
               </div>
               <div className="forum-list-item-bottom">
@@ -116,7 +117,7 @@ export default class Forum extends React.Component {
           footer={null}
         >
           <Form {...layout}>
-            <Form.Item label="Name">{data.name}</Form.Item>
+            <Form.Item label="Name">{data.username}</Form.Item>
             <Form.Item label="Email">{data.email}</Form.Item>
             <Form.Item label="Bio">{data.bio}</Form.Item>
           </Form>
