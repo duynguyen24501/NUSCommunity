@@ -1,4 +1,5 @@
 import React from "react";
+import {withRouter} from "react-router-dom";
 import BraftEditor from "braft-editor";
 import dayjs from "dayjs";
 import { Form, Input, message } from "antd";
@@ -8,13 +9,17 @@ import "./index.css";
 
 const controls = ["bold", "italic", "headings", "text-color", "emoji"];
 
-export default class ForumForm extends React.Component {
+class ForumForm extends React.Component {
   formRef = React.createRef();
 
-  state = {
-    tags: [],
-    tag: "",
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      tags: [],
+      tag: "",
+      username: "",
+    };
+  }
 
   componentDidMount() {
     const { data } = this.props;
@@ -23,6 +28,23 @@ export default class ForumForm extends React.Component {
         tags: data.tags,
       });
     }
+    this.getUsername();
+  }
+
+  getUsername() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.loggedin) {
+        message.error('Please register and login first to access!')
+        this.props.history.push('/')
+      }
+      this.setState({
+        username: response.username
+      })
+    })
   }
 
   onFinish = (values) => {
@@ -36,13 +58,31 @@ export default class ForumForm extends React.Component {
       id: data.id ? data.id : dayjs().valueOf(),
       title: values.title,
       msg: values.msg.toHTML(),
-      user: "abc",
-      time:dayjs().valueOf(),
-      // time: dayjs().format('YYYY-MM-DD hh:mm:ss'),
+      user: this.state.username,
+      //time:dayjs().valueOf(),
+      time: dayjs().format('YYYY-MM-DD hh:mm:ss'),
       tags,
     };
+
+    fetch('/forum/add-post', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message == "Success") {
+        message.success("Add post successfully!")
+      } else {
+        message.error("Fail to add post!")
+      }
+      onSubmit(params);
+    })
     console.log(params);
-    onSubmit(params);
+    //onSubmit(params);
   };
 
   addTag = () => {
@@ -179,3 +219,5 @@ export default class ForumForm extends React.Component {
     );
   }
 }
+
+export default withRouter(ForumForm);

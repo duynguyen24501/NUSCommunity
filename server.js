@@ -401,11 +401,11 @@ async function deleteUsers(email) {
 
 // Add posts
 app.post('/forum/add-post', async (req,res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   const title = req.body.title;
-  const content = req.body.content;
+  const content = req.body.msg;
   const email = req.session.email;
-  const time_start = req.body.time_start;
+  const time_start = req.body.time;
   const tags = req.body.tags;
 
   var user_id;
@@ -414,18 +414,18 @@ app.post('/forum/add-post', async (req,res) => {
 
   if (email) {
     const userResult = await getUsernameBasedOnEmail(email);
-    if (userResult[0][0]) {
-      user_id = userResult[0][0].user_id;
+    if (userResult && userResult.length > 0) {
+      user_id = userResult[0][0].id;
     }
   }
 
-  if (web_id & title && content && user_id && time_start) {
-    const addPostResult = await addPost(web_id, title,content,user_id,time_start);
+  if (web_id && title && content && user_id && time_start) {
+    const addPostResult = await addPost(web_id,title,content,user_id,time_start);
     if (addPostResult && addPostResult.length > 0) {
       //var post_id = results[0][0].post_id;
       check_add_post = true;
     } else {
-      check_add_hashtag = false;
+      check_add_post = false;
     }
   }
 
@@ -456,8 +456,9 @@ async function getUsernameBasedOnEmail(email) {
   }
 }
 
-async function addPost(title, content, user_id, time_start) {
+async function addPost(web_id, title, content, user_id, time_start) {
   try {
+    console.log("inside addPost function");
     const result = await pool.query(
       `INSERT INTO post (web_id, user_id, title, content, time_start) VALUES 
       ("${web_id}",
@@ -486,6 +487,7 @@ async function addHashtag(web_id, tags) {
     console.error(e);
   }
 }
+
 
 // Edit posts
 app.post('/forum/edit-post', async (req, res) => {

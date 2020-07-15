@@ -8,7 +8,7 @@ export default class Add extends React.Component {
     const forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
-    message.success("add success~");
+    //message.success("add success~");
     sessionStorage.setItem("forumList", JSON.stringify([...forumList, values]));
     history.push("/index/forum");
   };
