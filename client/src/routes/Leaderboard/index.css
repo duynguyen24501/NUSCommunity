@@ -1,13 +1,18 @@
-.leaderboard-bar {
+/* .leaderboard-bar {
   background-color: #ffc107;
   padding: 16px 32px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
-}
-
-.leaderboard-bar h1 {
+} */
+/* .leaderboard-bar h1 {
   color: #fff;
+  background-color: #35d0ba;
   font-weight: bolder;
-}
-.leaderboard-table {
+} */
+/* .leaderboard-table {
   margin-top: 20px;
+  background-color: aquamarine;
+} */
+.leaderboard-title {
+  /* background-color: #35d0ba; */
+  font-size: 20px;
 }

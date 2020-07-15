@@ -96,6 +96,7 @@ export default class Forum extends React.Component {
               <Button
                 type="primary"
                 htmlType="submit"
+                className="forum-button-search"
                 icon={<SearchOutlined />}
               />
             </Form.Item>
@@ -111,6 +112,7 @@ export default class Forum extends React.Component {
         <Modal
           visible={visible}
           title="User Info"
+          className="modal-user-display"
           onCancel={() => {
             this.setState({ visible: false });
           }}

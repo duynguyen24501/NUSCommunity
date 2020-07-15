@@ -13,18 +13,27 @@
 }
 .forum-add-form-search {
   margin-right: 0 !important;
+  /* background-color: #3b6978; */
+}
+.forum-button-search {
+  background-color: #3b6978;
 }
 .forum-add-btn {
   margin-left: 10px;
   width: 100%;
+  background-color: #3b6978;
+  font-size: 16px;
+  font-weight: bold;
 }
 .forum-list {
   flex: 1;
 }
 .forum-list-title {
   border: 1px solid #e8e8e8;
+  background-color: #35d0ba;
   height: 30px;
   padding-left: 10px;
+  font-size: 15px;
   font-weight: bolder;
   line-height: 28px;
 }

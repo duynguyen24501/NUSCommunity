@@ -48,7 +48,7 @@ export default class Leaderboard extends React.Component {
     return (
       <div className="leaderboard">
         <Table
-          title={() => <h4 className="blue">Ranking</h4>}
+          title={() => <h4 className="leaderboard-title">Ranking</h4>}
           className="leaderboard-table"
           dataSource={dataSource}
           columns={columns}

@@ -11,19 +11,29 @@
   margin-right: 10px;
 }
 .main-header-title {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bolder;
   line-height: 50px;
   flex: 1;
+  font-family: "Arial Black", Gadget, sans-serif;
+  color: rgba(0, 0, 0, 0.801);
 }
 .main-header-user {
   font-size: 14px;
   font-weight: bolder;
   line-height: 50px;
+  color: rgba(0, 0, 0, 0.767);
 }
 .main-menu {
   margin: 8px 0;
-  background: rgba(0, 0, 0, 0.2);
+  /* background: rgba(0, 0, 0, 0.2); */
+  background-color: #2b4d58;
+}
+.menu-item {
+  font-size: 17px;
+  color: white;
+  /* font-weight: bolder; */
+  margin-right: 10px;
 }
 
 .main-footer {
