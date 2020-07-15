@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `post` (
   `post_id` INT AUTO_INCREMENT PRIMARY KEY,
-  `web_id` INT NOT NULL,
-  `user_id` INT,
+  `web_id` BIGINT NOT NULL,
+  `user_id` INT NOT NULL,
   `title` varchar(100) NOT NULL,
   `content` varchar(500) NOT NULL,
   `num_likes` INT NOT NULL DEFAULT '0',
