@@ -102,7 +102,7 @@ class ForumForm extends React.Component {
     const forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
-    message.success("delete success~");
+    //message.success("delete success~");
     sessionStorage.setItem(
       "forumList",
       JSON.stringify(
@@ -111,7 +111,24 @@ class ForumForm extends React.Component {
         })
       )
     );
-    history.push("/index/forum");
+
+    fetch('/forum/delete-post', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message == "Success") {
+        message.success("Delete post successfully!")
+      } else {
+        message.error("Fail to delete post!")
+      }
+      history.push("/index/forum");
+    })
   };
 
   render() {

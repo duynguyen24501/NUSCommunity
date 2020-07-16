@@ -48,8 +48,26 @@ export default class Edit extends React.Component {
         list.push(item);
       }
     });
-    message.success("Edit post successfully!");
+    //message.success("Edit post successfully!");
     sessionStorage.setItem("forumList", JSON.stringify(list));
+    
+    fetch('/forum/edit-post', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message == "Success") {
+        message.success("Edit post successfully!")
+      } else {
+        message.error("Fail to edit post!")
+      }
+      //onSubmit(params);
+    })
     history.push("/index/forum");
   };
 

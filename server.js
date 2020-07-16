@@ -491,30 +491,38 @@ async function addHashtag(web_id, tags) {
 
 // Edit posts
 app.post('/forum/edit-post', async (req, res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   const title = req.body.title;
-  const content = req.body.content;
-  const username = req.body.username;
-  //const time_start = req.body.time_start;
+  const content = req.body.msg;
+  const email = req.session.email;
+  const time_start = req.body.time;
   const tags = req.body.tags;
 
+  var user_id;
   var check_update_post;
   var check_update_hashtag;
 
   // check username is the same as the ones who post
-  if (web_id && username) {
-    const usernameResult = await getUsernameBasedOnWebID(web_id);
-    if (usernameResult[0][0].username != username) {
-      return res.json({message: "You are not allowed to edit this post!"})
+  // if (web_id && username) {
+  //   const usernameResult = await getUsernameBasedOnWebID(web_id);
+  //   if (usernameResult[0][0].username != username) {
+  //     return res.json({message: "You are not allowed to edit this post!"})
+  //   }
+  // } else {
+  //   return res.json({message: "Error!"})
+  // }
+
+  if (email) {
+    const userResult = await getUsernameBasedOnEmail(email);
+    if (userResult && userResult.length > 0) {
+      user_id = userResult[0][0].id;
     }
-  } else {
-    return res.json({message: "Error!"})
   }
 
   // update if it's the same (post and hashtags table)
-  if (title && content) {
+  if (web_id && title && content) {
     const updatePostResult = await updatePost(web_id, title, content);
-    if (updatePostResult[0][0]) {
+    if (updatePostResult.length > 0) {
       check_update_post = true;
     } else {
       check_update_post = false;
@@ -532,9 +540,9 @@ app.post('/forum/edit-post', async (req, res) => {
   }
   
   if (check_update_post && check_update_hashtag) {
-    return res.json({message: "Update post successfully!"})
+    return res.json({message: "Success"})
   }
-  return res.json({message: "Fail to update post!"})
+  return res.json({message: "Fail"})
 })
 
 async function getUsernameBasedOnWebID(web_id) {
@@ -615,27 +623,33 @@ async function addComment(post_web_id, comment_web_id, user_id, comment_content)
 
 // DELETE post
 app.post('/forum/delete-post', async(req, res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   if (web_id) {
     const deletePostResult = await deletePost(web_id);
     if (deletePostResult.length > 0) {
-      return res.json({message: "Delete post successfully"});
+      return res.json({message: "Success"});
     } else {
-      return res.json({message: "Error! Can't not delete post!"})
+      return res.json({message: "Fail"})
     }
   } else {
-    return res.json({message: "Error! Can't not delete post!"})
+    return res.json({message: "Fail"})
   }
 })
 
 async function deletePost(web_id) {
   try {
-    const results = await pool.query(
-      `DELETE FROM post WHERE web_id = "${web_id}";
-      DELETE FROM hashtag WHERE web_id = "${web_id}";
-      DELETE FROM comment WHERE post_web_id = "${web_id}"`
+    const result1 = await pool.query(
+      `DELETE FROM post WHERE web_id = "${web_id}";`, 
+      //`DELETE FROM hashtag WHERE web_id = "${web_id}";`, 
+      //`DELETE FROM comment WHERE post_web_id = "${web_id}";`
+    );
+    const result2 = await pool.query(
+      `DELETE FROM hashtag WHERE web_id = "${web_id}";`
+    );
+    const result3 = await pool.query(
+      `DELETE FROM comment WHERE post_web_id = "${web_id}";`
     )
-      return results;
+    return result1;
   } catch (e) {
     console.error(e);
   }
