@@ -105,7 +105,7 @@ export default class Info extends React.Component {
         <div className="forumInfo-data">
           <div className="forumInfo-data-user">
             <UserAddOutlined className="mr-8" />
-            {data.user}
+            {data.username}
             <div className="forumInfo-data-user-time">
               {dayjs(data.time).fromNow()}
             </div>

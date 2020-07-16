@@ -69,26 +69,7 @@ class ForumForm extends React.Component {
       //time: dayjs.format('YYYY-MM-DD hh:mm:ss'),
       tags: this.state.tags
     };
-    console.log(params.time);
-    fetch('/forum/add-post', {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res => res.json())
-    .then(res => {
-      console.log(res.message);
-      if (res.message == "Success") {
-        message.success("Add post successfully!")
-      } else {
-        message.error("Fail to add post!")
-      }
-      onSubmit(params);
-    })
-    console.log(params);
-    //onSubmit(params);
+    onSubmit(params);
   };
 
   addTag = () => {
