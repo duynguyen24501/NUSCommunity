@@ -122,7 +122,7 @@ class ForumForm extends React.Component {
     .then(res => res.json())
     .then(res => {
       console.log(res.message);
-      if (res.message == "Success") {
+      if (res.message === "Success") {
         message.success("Delete post successfully!")
       } else {
         message.error("Fail to delete post!")

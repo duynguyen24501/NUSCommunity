@@ -5,8 +5,8 @@ import device from "./Device";
 import Result from "./Result";
 import NotFound from "./NotFound";
 import "./Home.sass";
-import Router from "next/router";
-import Session from "../../utils/session";
+//import Router from "next/router";
+//import Session from "../../utils/session";
 
 const AppTitle = styled.h1`
   display: block;

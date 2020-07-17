@@ -27,7 +27,7 @@ export default class Edit extends React.Component {
       })
       .then(res => res.json())
       .then(response => {
-        if (data.email != response.email) {
+        if (data.email !== response.email) {
           message.error('You are not allow to edit this post!')
           this.props.history.push('/index/forum');
         }
@@ -61,7 +61,7 @@ export default class Edit extends React.Component {
     .then(res => res.json())
     .then(res => {
       console.log(res.message);
-      if (res.message == "Success") {
+      if (res.message === "Success") {
         message.success("Edit post successfully!")
       } else {
         message.error("Fail to edit post!")

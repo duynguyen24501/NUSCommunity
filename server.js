@@ -308,6 +308,7 @@ app.get("/auth/check-session", async (req, res) => {
         loggedin: true,
         email: req.session.email,
         username: results[0][0].username,
+        points: results[0][0].points,
         bio: results[0][0].bio || "",
       });
     }
@@ -693,6 +694,86 @@ async function deletePost(web_id) {
       `DELETE FROM comment WHERE post_web_id = "${web_id}";`
     )
     return result1;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+////////////////////////////////////////
+// Keep APIs
+app.post('/keep/add-note', async(req,res) => {
+  const email = req.session.email;
+  const title = req.body.title;
+  const content = req.body.content;
+  console.log(email);
+  console.log(title);
+  console.log(content);
+  const addNoteResult = await addNote(email, title, content);
+  if (addNoteResult.length>0){
+    return res.json({message: 'Success'});
+  } else {
+    return res.json({message:'Fail'});
+  }
+})
+
+
+async function addNote(email,title,content) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO keep (email,title,content) VALUES("${email}","${title}","${content}"); `
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+app.post('/keep/delete-note', async(req,res) => {
+  const email = req.session.email;
+  const title = req.body.title;
+  const content = req.body.content;
+  console.log(email);
+  console.log(title);
+  console.log(content);
+  const deleteNoteResult = await deleteNote(email, title, content);
+  if (deleteNoteResult.length>0){
+    return res.json({message: 'Success'});
+  } else {
+    return res.json({message:'Fail'});
+  }
+})
+
+
+async function deleteNote(email,title,content) {
+  try {
+    const result = await pool.query(
+      `DELETE FROM keep WHERE email="${email}" and title="${title}" and content="${content}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+app.get("/keep/display-notes", async (req, res) => {
+  const email = req.session.email;
+  if (email) {
+    const getNotesResult = await getNotes(email);
+    if (getNotesResult[0]) {
+      return res.json(getNotesResult[0]);
+    } else {
+      return res.json({message:'Fail'})
+    }
+  }
+})
+
+async function getNotes(email) {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM keep WHERE email="${email}";`
+    )
+    return result;
   } catch (e) {
     console.error(e);
   }

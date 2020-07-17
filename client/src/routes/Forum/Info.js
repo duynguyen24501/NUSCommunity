@@ -76,7 +76,10 @@ export default class Info extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      this.state.userComment = response.username;
+      this.setState({ 
+        userComment: response.username
+      })
+      //this.state.userComment = response.username;
     })
   }
 
@@ -137,7 +140,7 @@ export default class Info extends React.Component {
     .then(res => res.json())
     .then(res => {
       console.log(res.message);
-      if (res.message == "Success") {
+      if (res.message === "Success") {
         message.success("Add comment successfully!")
       } else {
         message.error("Fail to add comment!")
@@ -176,7 +179,7 @@ export default class Info extends React.Component {
       .then(res => res.json())
       .then(res => {
           console.log(res.message);
-          if (res.message == "Success") {
+          if (res.message === "Success") {
             message.success("Delete comment successfully!")
           } else {
             message.error("Fail to delete post!")
