@@ -1,6 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
-import { message, Form } from "antd";
+import { message, Form, Tag } from "antd";
 import BraftEditor from "braft-editor";
 import {
   UserAddOutlined,
@@ -12,6 +12,7 @@ import { parse } from "qs";
 import "braft-editor/dist/index.css";
 
 const controls = ["bold", "italic", "headings", "text-color", "emoji"];
+const colors = ["magenta", "orange", "cyan", "purple"];
 
 export default class Info extends React.Component {
   formRef = React.createRef();
@@ -199,7 +200,7 @@ export default class Info extends React.Component {
       <div className="forumInfo">
         <div className="forumInfo-data">
           <div className="forumInfo-data-user">
-            <UserAddOutlined className="mr-8" />
+            <UserAddOutlined className="mr-8 blue" />
             {data.username}
             <div className="forumInfo-data-user-time">
               {dayjs(data.time).fromNow()}
@@ -211,10 +212,13 @@ export default class Info extends React.Component {
             dangerouslySetInnerHTML={{ __html: data.msg }}
           />
           <div className="forumInfo-data-bottom">
-            {data.tags.map((res) => (
-              <div key={res} className="forumInfo-data-bottom-tag">
-                {res}
-              </div>
+            {data.tags.map((res,index) => (
+              <Tag key={res} color={colors[index % 4]}>
+              {res}
+              </Tag>
+              // <div key={res} className="forumInfo-data-bottom-tag">
+              //   {res}
+              // </div>
             ))}
             <div className="forumInfo-data-bottom-blank" />
             <LikeOutlined
