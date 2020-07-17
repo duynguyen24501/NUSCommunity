@@ -19,12 +19,12 @@ export default class Info extends React.Component {
   state = {
     data: {},
     comment: [
-      {
-        comment_web_id: dayjs().valueOf(),
-        time: dayjs().valueOf(),
-        username: "abc",
-        value: "<div>111</div>",
-      },
+      // {
+      //   comment_web_id: dayjs().valueOf(),
+      //   time: dayjs().valueOf(),
+      //   username: "abc",
+      //   value: "<div>111</div>",
+      // },
     ],
     like: false,
     favorite: false,
@@ -33,6 +33,7 @@ export default class Info extends React.Component {
 
   componentDidMount() {
     const query = this.getPageQuery();
+    this.displayComments(query);
     const forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
@@ -47,6 +48,26 @@ export default class Info extends React.Component {
       });
     }, 100);
     this.getUserComment();
+  }
+
+  displayComments(id) {
+    const params = {id: id}
+    fetch('/forum/display-comment', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      //credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.message) {
+        this.setState({comment: response});
+      } else {
+        message.error("Fail to display comments!")
+      }
+    })
   }
 
   getUserComment() {

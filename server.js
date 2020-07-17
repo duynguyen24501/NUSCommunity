@@ -642,6 +642,28 @@ async function deleteComment(post_web_id, comment_web_id) {
   }
 }
 
+// Get all comments
+app.post('/forum/display-comment', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const getCommentResult = await getComments(post_web_id);
+  if (getCommentResult.length > 0) {
+    return res.json(getCommentResult[0]);
+  } else {
+    return res.json({message: 'Fail'});
+  }
+})
+
+async function getComments(post_web_id) {
+  try {
+    const results =  await pool.query(
+      `SELECT * FROM comment WHERE post_web_id = ${post_web_id};`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // DELETE post
 app.post('/forum/delete-post', async(req, res) => {
   const web_id = req.body.id;
