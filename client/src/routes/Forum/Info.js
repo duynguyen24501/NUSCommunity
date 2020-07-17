@@ -20,14 +20,15 @@ export default class Info extends React.Component {
     data: {},
     comment: [
       {
-        id: dayjs().valueOf(),
+        comment_web_id: dayjs().valueOf(),
         time: dayjs().valueOf(),
-        user: "abc",
+        username: "abc",
         value: "<div>111</div>",
       },
     ],
     like: false,
     favorite: false,
+    userComment:'',
   };
 
   componentDidMount() {
@@ -45,7 +46,19 @@ export default class Info extends React.Component {
         comment: BraftEditor.createEditorState(""),
       });
     }, 100);
+    this.getUserComment();
   }
+
+  getUserComment() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      this.state.userComment = response.username;
+    })
+  }
+
   getPageQuery = () => parse(window.location.href.split("?")[1]);
 
   remove = () => {
@@ -69,17 +82,44 @@ export default class Info extends React.Component {
   onFinish = (values) => {
     const { comment } = this.state;
     this.formRef.current.setFieldsValue();
+    
     this.setState({
       comment: [
         ...comment,
         {
-          id: dayjs().valueOf(),
+          comment_web_id: dayjs().valueOf(),
           time: dayjs().valueOf(),
-          user: "abc",
+          username: "abc",
           value: values.comment.toHTML(),
         },
       ],
     });
+
+    const params = {
+      post_web_id: this.state.data.id,
+      comment_web_id: dayjs().valueOf(),
+      username: this.state.userComment,
+      value: values.comment.toHTML(),
+      time: dayjs().valueOf(),
+    } 
+
+    fetch('/forum/add-comment', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message == "Success") {
+        message.success("Add comment successfully!")
+      } else {
+        message.error("Fail to add comment!")
+      }
+    })
+
     this.formRef.current.setFieldsValue({
       comment: BraftEditor.createEditorState(""),
     });
@@ -90,7 +130,7 @@ export default class Info extends React.Component {
     message.success("delete success~");
     this.setState({
       comment: comment.filter((item) => {
-        return Number(item.id) !== id;
+        return Number(item.comment_web_id) !== id;
       }),
     });
   };
@@ -180,11 +220,11 @@ export default class Info extends React.Component {
         </div>
         <div className="forumInfo-commentList">
           {comment.map((item) => (
-            <div key={item.id} className="forumInfo-commentList-item">
+            <div key={item.comment_web_id} className="forumInfo-commentList-item">
               <div className="forumInfo-commentList-item-header">
                 <div className="forumInfo-commentList-item-header-user">
                   <UserAddOutlined className="mr-8" />
-                  {item.user}
+                  {item.username}
                 </div>
                 <div className="forumInfo-commentList-item-header-time">
                   {dayjs(item.time).fromNow()}
@@ -195,7 +235,7 @@ export default class Info extends React.Component {
                 dangerouslySetInnerHTML={{ __html: item.value }}
               />
               <DeleteOutlined
-                onClick={() => this.removeComment(item.id)}
+                onClick={() => this.removeComment(item.comment_web_id)}
                 className="forumInfo-commentList-item-del"
               />
             </div>

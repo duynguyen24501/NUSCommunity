@@ -582,38 +582,31 @@ async function deleteOldTags(web_id) {
 
 // Add comment
 app.post('/forum/add-comment', async (req, res) => {
-  const post_web_id = req.body.web_id;
+  const post_web_id = req.body.post_web_id;
   const comment_web_id = req.body.comment_web_id;
-  const email = req.session.email;
-  const comment_content = req.body.comment_content;
+  const username = req.body.username;
+  const value = req.body.value;
+  const time = req.body.time;
 
-  var user_id;
-  
-  if (email) {
-    const userResult = await getUsernameBasedOnEmail(email);
-    if (userResult[0][0]) {
-      user_id = userResult[0][0].user_id;
-    }
-  }
-
-  if (post_web_id && user_id && comment_web_id && comment_content) {
-    const addCommentResult = await addComment(post_web_id, comment_web_id, user_id, comment_content);
-    if (addCommentResult[0][0]) {
-      return res.json({message: 'Comment added successfully!'})
+  if (post_web_id && username && comment_web_id && value && time) {
+    const addCommentResult = await addComment(post_web_id, comment_web_id, username, value, time);
+    if (addCommentResult.length>0) {
+      return res.json({message: 'Success'})
     } else {
-      return res.json({message: 'Fail to add comment!'})
+      return res.json({message: 'Fail'})
     }
   }
 }) 
 
-async function addComment(post_web_id, comment_web_id, user_id, comment_content) {
+async function addComment(post_web_id, comment_web_id, username, value, time) {
   try {
     const results = await pool.query(
-      `INSERT INTO comment (post_web_id,comment_web_id,user_id,comment_content) VALUES 
+      `INSERT INTO comment (post_web_id,comment_web_id,username,value,time) VALUES 
       ("${post_web_id}",
         "${comment_web_id}",
-        "${user_id}",
-        "${comment_content}")`
+        "${username}",
+        "${value}",
+        "${time}");`
     )
     return results;
   } catch (e) {
