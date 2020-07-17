@@ -614,6 +614,34 @@ async function addComment(post_web_id, comment_web_id, username, value, time) {
   }
 }
 
+// Delete comment
+app.post('/forum/delete-comment', async (req, res) => {
+  const post_web_id = req.body.post_web_id;
+  const comment_web_id = req.body.comment_web_id;
+  
+  console.log("post_web_id: " + post_web_id);
+  console.log("comment_web_id: " + comment_web_id)
+  if (post_web_id && comment_web_id) {
+    const deleteCommentResult = await deleteComment(post_web_id, comment_web_id);
+    if (deleteCommentResult.length>0) {
+      return res.json({message: 'Success'})
+    } else {
+      return res.json({message: 'Fail'})
+    }
+  }
+}) 
+
+async function deleteComment(post_web_id, comment_web_id) {
+  try {
+    const results = await pool.query(
+      `DELETE FROM comment WHERE post_web_id = "${post_web_id}" and comment_web_id = "${comment_web_id}";`
+    )
+    return results;
+  } catch (e) {
+      console.error(e);
+  }
+}
+
 // DELETE post
 app.post('/forum/delete-post', async(req, res) => {
   const web_id = req.body.id;

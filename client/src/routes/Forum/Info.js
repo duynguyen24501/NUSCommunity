@@ -82,14 +82,17 @@ export default class Info extends React.Component {
   onFinish = (values) => {
     const { comment } = this.state;
     this.formRef.current.setFieldsValue();
+
+    const comment_web_id = dayjs().valueOf();
+    const time = dayjs().valueOf();
     
     this.setState({
       comment: [
         ...comment,
         {
-          comment_web_id: dayjs().valueOf(),
-          time: dayjs().valueOf(),
-          username: "abc",
+          comment_web_id: comment_web_id,
+          time: time,
+          username: this.state.userComment,
           value: values.comment.toHTML(),
         },
       ],
@@ -97,10 +100,10 @@ export default class Info extends React.Component {
 
     const params = {
       post_web_id: this.state.data.id,
-      comment_web_id: dayjs().valueOf(),
+      comment_web_id: comment_web_id,
       username: this.state.userComment,
       value: values.comment.toHTML(),
-      time: dayjs().valueOf(),
+      time: time,
     } 
 
     fetch('/forum/add-comment', {
@@ -127,12 +130,40 @@ export default class Info extends React.Component {
 
   removeComment = (id) => {
     const { comment } = this.state;
-    message.success("delete success~");
-    this.setState({
-      comment: comment.filter((item) => {
-        return Number(item.comment_web_id) !== id;
-      }),
-    });
+    //message.success("delete success~");
+
+    const post_web_id = this.state.data.id;
+    const params = {
+      post_web_id: post_web_id,
+      comment_web_id: id,
+    }
+
+    if (this.state.data.username === this.state.userComment) {
+      this.setState({
+        comment: comment.filter((item) => {
+          return Number(item.comment_web_id) !== id;
+        }),
+      });
+
+      fetch('/forum/delete-comment', {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(res => {
+          console.log(res.message);
+          if (res.message == "Success") {
+            message.success("Delete comment successfully!")
+          } else {
+            message.error("Fail to delete post!")
+          }
+      })
+    } else {
+      message.error("You are not allowed to delete comment!");
+    }
   };
 
   render() {
