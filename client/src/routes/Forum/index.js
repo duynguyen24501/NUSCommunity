@@ -18,15 +18,27 @@ export default class Forum extends React.Component {
   state = {
     visible: false,
     data: { username: "", email: "", bio: "" },
+    searchKey:"",
   };
   onFinish = (values) => {
+    const {history} = this.props;
     console.log(values);
+    this.setState({
+      searchKey: values.discussion,
+    })
+
+    history.push("/index/forum");
   };
 
   render() {
-    const forumList = sessionStorage.getItem("forumList")
+    var forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
+
+    if (this.state.searchKey !== ''){
+     forumList = forumList.filter((item) => item.tags.map(x => x.toLowerCase()).includes(this.state.searchKey.toLowerCase()));
+    }
+    
     const { visible, data } = this.state;
     const layout = {
       labelCol: {
