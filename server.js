@@ -699,6 +699,52 @@ async function deletePost(web_id) {
   }
 }
 
+// Display number of likes
+app.post('/forum/display-like', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const getLikesResult = await getLikes(post_web_id);
+  if (getLikesResult.length > 0) {
+    return res.json(getLikesResult[0][0].num_likes);
+  } else {
+    return res.json({message: 'Fail'});
+  }
+})
+
+async function getLikes(post_web_id) {
+  try {
+    const results =  await pool.query(
+      `SELECT num_likes FROM post WHERE web_id = ${post_web_id};`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+app.post('/forum/display-state-like', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const email = req.session.email;
+  const getStateLikeResult = await getStateLike(post_web_id,email);
+  if (getStateLikeResult) {
+    return res.json({message: "Liked"});
+  } else {
+    return res.json({message: 'No'});
+  }
+})
+
+async function getStateLike(post_web_id,email) {
+  try {
+    const results =  await pool.query(
+      `SELECT liked FROM like WHERE post_web_id = "${post_web_id}" and email="${email}";`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+
+
 ////////////////////////////////////////
 // Keep APIs
 app.post('/keep/add-note', async(req,res) => {

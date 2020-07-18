@@ -194,8 +194,12 @@
 .forumInfo-data-bottom-blank {
   flex: 1;
 }
+.forumInfo-data-number-like {
+  font-size: 20px;
+  margin-right: 10px;
+}
 .forumInfo-data-bottom-icon {
-  font-size: 16px;
+  font-size: 25px;
   margin-right: 16px;
   cursor: pointer;
 }
