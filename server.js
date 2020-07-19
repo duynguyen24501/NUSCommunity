@@ -459,7 +459,7 @@ async function getUsernameBasedOnEmail(email) {
 
 async function addPost(web_id, title, content, user_id, time_start) {
   try {
-    console.log("inside addPost function");
+    //console.log("inside addPost function");
     const result = await pool.query(
       `INSERT INTO post (web_id, user_id, title, content, time_start) VALUES 
       ("${web_id}",
@@ -859,9 +859,9 @@ app.post('/keep/add-note', async(req,res) => {
   const email = req.session.email;
   const title = req.body.title;
   const content = req.body.content;
-  console.log(email);
-  console.log(title);
-  console.log(content);
+  // console.log(email);
+  // console.log(title);
+  // console.log(content);
   const addNoteResult = await addNote(email, title, content);
   if (addNoteResult.length>0){
     return res.json({message: 'Success'});
@@ -887,9 +887,9 @@ app.post('/keep/delete-note', async(req,res) => {
   const email = req.session.email;
   const title = req.body.title;
   const content = req.body.content;
-  console.log(email);
-  console.log(title);
-  console.log(content);
+  // console.log(email);
+  // console.log(title);
+  // console.log(content);
   const deleteNoteResult = await deleteNote(email, title, content);
   if (deleteNoteResult.length>0){
     return res.json({message: 'Success'});
@@ -910,6 +910,7 @@ async function deleteNote(email,title,content) {
   }
 }
 
+
 app.get("/keep/display-notes", async (req, res) => {
   const email = req.session.email;
   if (email) {
@@ -922,10 +923,33 @@ app.get("/keep/display-notes", async (req, res) => {
   }
 })
 
+
 async function getNotes(email) {
   try {
     const result = await pool.query(
       `SELECT * FROM keep WHERE email="${email}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+/////////////////////////////////////////////////
+// Leaderboard APIs
+app.get("/leaderboard/get-data", async (req, res) => {
+  const getLeaderboardDataResult = await getLeaderboardData();
+  if (getLeaderboardDataResult.length > 0) {
+    return res.json(getLeaderboardDataResult[0]);
+  }
+})
+
+
+async function getLeaderboardData() {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM users ORDER BY points DESC`
     )
     return result;
   } catch (e) {
