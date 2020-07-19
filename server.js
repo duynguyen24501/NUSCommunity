@@ -704,7 +704,7 @@ app.post('/forum/display-like', async (req, res) => {
   const post_web_id = req.body.id.id;
   const getLikesResult = await getLikes(post_web_id);
   if (getLikesResult.length > 0) {
-    return res.json(getLikesResult[0][0].num_likes);
+    return res.json({num_likes: getLikesResult[0][0].num_likes});
   } else {
     return res.json({message: 'Fail'});
   }
@@ -725,8 +725,12 @@ app.post('/forum/display-state-like', async (req, res) => {
   const post_web_id = req.body.id.id;
   const email = req.session.email;
   const getStateLikeResult = await getStateLike(post_web_id,email);
-  if (getStateLikeResult) {
-    return res.json({message: "Liked"});
+  if (getStateLikeResult[0][0]) {
+    if (getStateLikeResult[0][0].liked === 1) {
+      return res.json({message: "Liked"});
+    } else {
+      return res.json({message: 'No'});
+    }
   } else {
     return res.json({message: 'No'});
   }
@@ -735,7 +739,7 @@ app.post('/forum/display-state-like', async (req, res) => {
 async function getStateLike(post_web_id,email) {
   try {
     const results =  await pool.query(
-      `SELECT liked FROM like WHERE post_web_id = "${post_web_id}" and email="${email}";`
+      `SELECT liked FROM react WHERE post_web_id = "${post_web_id}" and email="${email}";`
     )
     return results;
   } catch (e) {
@@ -743,7 +747,71 @@ async function getStateLike(post_web_id,email) {
   }
 }
 
+app.post('/forum/add-state-like', async (req, res) => {
+const post_web_id = req.body.web_id;
+const liked = !req.body.liked;
+const email = req.session.email;
+const num_likes = req.body.num_likes;
+console.log("num_likes: " +  num_likes);
 
+const updateNumLikeResult = await updateNumLike(post_web_id, num_likes);
+// if (updateNumLikeResult.length > 0) {
+//   console.log("Update success");
+// }
+
+const getStateLikeResult = await getStateLike(post_web_id,email);
+if (getStateLikeResult[0][0]) {
+  console.log("Update here");
+  const updateStateLikeResult = await updateStateLike(post_web_id,email,liked ? 1 : 0);
+  // if (updateStateLikeResult.length > 0) {
+  //   return res.json({message: 'Success'});
+  // } else {
+  //   return res.json({message: 'Fail'});
+  // }
+} else {
+  const addStateLikeResult = await addStateLike(post_web_id,email,liked ? 1 : 0);
+  // if (addStateLikeResult.length > 0) {
+  //   return res.json({message: 'Success'});
+  // } else {
+  //   return res.json({message: 'Fail'});
+  // }
+}
+})
+
+async function updateNumLike(post_web_id, num_likes) {
+  try {
+    const result = await pool.query(
+      `UPDATE post SET num_likes="${num_likes}" WHERE web_id = "${post_web_id}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function addStateLike(post_web_id,email,liked) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO react (post_web_id,email,liked) VALUES 
+      ("${post_web_id}","${email}","${liked}");`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function updateStateLike(post_web_id,email,liked) {
+  try {
+    const result = await pool.query(
+      `UPDATE react SET liked = "${liked}" 
+      WHERE post_web_id = "${post_web_id}" and email = "${email}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 ////////////////////////////////////////
 // Keep APIs

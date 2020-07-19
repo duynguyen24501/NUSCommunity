@@ -68,7 +68,7 @@ export default class Info extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      console.log(response.message);
+      //console.log(response.message);
       if (response.message === 'Liked') {
         this.setState({like: true});
       } else {
@@ -89,12 +89,44 @@ export default class Info extends React.Component {
     .then(res => res.json())
     .then(response => {
       if (!response.message) {
-        this.setState({num_likes: response});
+        this.setState({num_likes: response.num_likes});
       } else {
         message.error("Fail to display reacts!")
       }  
     })
   }
+
+  dealLikeClick(like) {
+    var numLikes;
+    if (!like) {
+      numLikes = this.state.num_likes + 1;
+      this.setState({
+        num_likes: numLikes,
+      })
+    } else {
+      numLikes = this.state.num_likes - 1;
+      this.setState({
+        num_likes: numLikes,
+      })
+    }
+   
+    const param1 = {
+      web_id: this.state.data.id,
+      num_likes: numLikes,
+      liked: like
+    };
+    fetch('/forum/add-state-like', {
+      method: 'POST',
+      body: JSON.stringify(param1),
+      headers: {'Content-Type': 'application/json'}
+    })
+    // .then(res => res.json())
+    // .then(res => {
+    //     console.log("add: " + res.message);
+    // })
+
+    this.setState({ like: !like });
+}
 
   displayComments(id) {
     const params = {id: id}
@@ -268,9 +300,7 @@ export default class Info extends React.Component {
             <div className="forumInfo-data-bottom-blank" />
             <div className="forumInfo-data-number-like">{this.state.num_likes}</div>
             <LikeOutlined
-              onClick={() => {
-                this.setState({ like: !like });
-              }}
+              onClick={() => this.dealLikeClick(like)}
               className={`forumInfo-data-bottom-icon ${like ? "red" : ""}`}
             />
             {/* <HeartOutlined
