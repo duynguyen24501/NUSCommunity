@@ -682,6 +682,11 @@ app.post('/forum/delete-post', async(req, res) => {
 
 async function deletePost(web_id) {
   try {
+    const result4 = await pool.query(
+      `UPDATE users SET points = points - 
+      (SELECT num_likes FROM post WHERE web_id = "${web_id}")
+      WHERE id = (SELECT user_id FROM post WHERE web_id = "${web_id}")`
+    )
     const result1 = await pool.query(
       `DELETE FROM post WHERE web_id = "${web_id}";`, 
       //`DELETE FROM hashtag WHERE web_id = "${web_id}";`, 
@@ -776,7 +781,42 @@ if (getStateLikeResult[0][0]) {
   //   return res.json({message: 'Fail'});
   // }
 }
+const getPointResult = await getPoint(post_web_id);
+    var updatePointResult;
+    if (liked) {
+      //console.log("Here 2");
+       updatePointResult = await updatePoint(post_web_id,getPointResult[0][0].points+1);
+    } else {
+      //console.log("Here 3");
+       updatePointResult = await updatePoint(post_web_id,getPointResult[0][0].points-1);
+    }
 })
+
+async function getPoint(post_web_id) {
+  try {
+    const result = await pool.query(
+      `SELECT points FROM users WHERE id = (
+              SELECT user_id
+              FROM post 
+              WHERE web_id="${post_web_id}")`
+    )
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function updatePoint(post_web_id,newPoint) {
+  try {
+    const result = await pool.query(
+      `UPDATE users SET points="${newPoint}" WHERE id= 
+          (SELECT user_id FROM post WHERE web_id="${post_web_id}")`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
 
 async function updateNumLike(post_web_id, num_likes) {
   try {
