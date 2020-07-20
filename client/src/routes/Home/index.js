@@ -58,7 +58,7 @@ export default class Home extends React.Component {
     var forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
-    console.log("Check: " + this.state.mostLikePost);
+    //console.log("Check: " + this.state.mostLikePost);
     //if (this.state.searchKey !== ''){
      forumList = forumList.filter((item) => this.state.mostLikePost.includes(item.id));
     //}
