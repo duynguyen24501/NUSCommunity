@@ -31,12 +31,12 @@
   .forum-list-title-home {
     border: 1px solid #e8e8e8;
     background-color: #32bda8;
-    height: 60px;
+    height: 45px;
     /* padding-left: 10px; */
-    font-size: 40px;
-    font-weight: bolder;
+    font-size: 30px;
+    /* font-weight: bolder; */
     color: rgb(243, 240, 240);
-    line-height: 58px;
+    line-height: 48px;
     text-align: center;
   }
   .forum-list-item-home {
