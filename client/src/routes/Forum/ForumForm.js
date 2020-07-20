@@ -78,10 +78,15 @@ class ForumForm extends React.Component {
       message.error("please enter your tag name");
       return;
     }
-    this.setState({
-      tags: [...tags, tag],
-      tag: "",
-    });
+    const newTags = tags.map(x => x.toLowerCase());
+    if (newTags.includes(tag.toLowerCase())) {
+      message.error(tag + " tag already exists");
+    } else {
+      this.setState({
+        tags: [...tags, tag],
+        tag: "",
+      });
+    }
   };
 
   removeTag = (name) => {
