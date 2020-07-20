@@ -949,7 +949,7 @@ app.get("/leaderboard/get-data", async (req, res) => {
 async function getLeaderboardData() {
   try {
     const result = await pool.query(
-      `SELECT * FROM users ORDER BY points DESC`
+      `SELECT * FROM users WHERE verified=1 ORDER BY points DESC`
     )
     return result;
   } catch (e) {
@@ -957,6 +957,34 @@ async function getLeaderboardData() {
   }
 }
 
+///////////////////////////////////////////////////
+// Homepage APIs
+app.get("/home/get-most-like-post", async (req, res) => {
+  const getMostLikePostResult = await getMostLikePost();
+  // console.log(getMostLikePostResult[0]);
+  // console.log(getMostLikePostResult[0].web_id);
+  if (getMostLikePostResult.length > 0) {
+    return res.json(getMostLikePostResult[0]);
+  }
+})
+
+
+async function getMostLikePost() {
+  try {
+    const result = await pool.query(
+      `SELECT web_id
+      FROM post 
+      WHERE num_likes = 
+      (SELECT num_likes
+      FROM post 
+      ORDER BY num_likes DESC
+      LIMIT 1)`
+    )
+    return result
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));
