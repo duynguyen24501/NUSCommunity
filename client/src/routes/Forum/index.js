@@ -36,7 +36,7 @@ export default class Forum extends React.Component {
       : [];
 
     if (this.state.searchKey !== ''){
-     forumList = forumList.filter((item) => item.tags.map(x => x.toLowerCase()).includes(this.state.searchKey.toLowerCase()));
+     forumList = forumList.filter((item) => item.tags.map(x => x.toLowerCase()).includes(this.state.searchKey.toLowerCase()) || item.title.toLowerCase().includes(this.state.searchKey.toLowerCase()));
     }
     
     const { visible, data } = this.state;
@@ -102,7 +102,7 @@ export default class Forum extends React.Component {
             className="forum-add-form"
           >
             <Form.Item name="discussion">
-              <Input placeholder="search discussion" />
+              <Input placeholder="Search title or tag" />
             </Form.Item>
             <Form.Item className="forum-add-form-search">
               <Button
