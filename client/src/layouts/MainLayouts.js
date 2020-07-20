@@ -113,7 +113,7 @@ class MainLayouts extends React.Component {
           className="main-menu"
         >
           {navList.map((item) => (
-            <Menu.Item key={item.link}>{item.name}</Menu.Item>
+            <Menu.Item key={item.link} className="menu-item">{item.name}</Menu.Item>
           ))}
         </Menu>
         <>

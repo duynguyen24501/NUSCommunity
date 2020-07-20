@@ -308,6 +308,7 @@ app.get("/auth/check-session", async (req, res) => {
         loggedin: true,
         email: req.session.email,
         username: results[0][0].username,
+        points: results[0][0].points,
         bio: results[0][0].bio || "",
       });
     }
@@ -401,11 +402,11 @@ async function deleteUsers(email) {
 
 // Add posts
 app.post('/forum/add-post', async (req,res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   const title = req.body.title;
-  const content = req.body.content;
+  const content = req.body.msg;
   const email = req.session.email;
-  const time_start = req.body.time_start;
+  const time_start = req.body.time;
   const tags = req.body.tags;
 
   var user_id;
@@ -414,18 +415,18 @@ app.post('/forum/add-post', async (req,res) => {
 
   if (email) {
     const userResult = await getUsernameBasedOnEmail(email);
-    if (userResult[0][0]) {
-      user_id = userResult[0][0].user_id;
+    if (userResult && userResult.length > 0) {
+      user_id = userResult[0][0].id;
     }
   }
 
-  if (web_id & title && content && user_id && time_start) {
-    const addPostResult = await addPost(web_id, title,content,user_id,time_start);
+  if (web_id && title && content && user_id && time_start) {
+    const addPostResult = await addPost(web_id,title,content,user_id,time_start);
     if (addPostResult && addPostResult.length > 0) {
       //var post_id = results[0][0].post_id;
       check_add_post = true;
     } else {
-      check_add_hashtag = false;
+      check_add_post = false;
     }
   }
 
@@ -456,8 +457,9 @@ async function getUsernameBasedOnEmail(email) {
   }
 }
 
-async function addPost(title, content, user_id, time_start) {
+async function addPost(web_id, title, content, user_id, time_start) {
   try {
+    //console.log("inside addPost function");
     const result = await pool.query(
       `INSERT INTO post (web_id, user_id, title, content, time_start) VALUES 
       ("${web_id}",
@@ -487,32 +489,41 @@ async function addHashtag(web_id, tags) {
   }
 }
 
+
 // Edit posts
 app.post('/forum/edit-post', async (req, res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   const title = req.body.title;
-  const content = req.body.content;
-  const username = req.body.username;
-  //const time_start = req.body.time_start;
+  const content = req.body.msg;
+  const email = req.session.email;
+  const time_start = req.body.time;
   const tags = req.body.tags;
 
+  var user_id;
   var check_update_post;
   var check_update_hashtag;
 
   // check username is the same as the ones who post
-  if (web_id && username) {
-    const usernameResult = await getUsernameBasedOnWebID(web_id);
-    if (usernameResult[0][0].username != username) {
-      return res.json({message: "You are not allowed to edit this post!"})
+  // if (web_id && username) {
+  //   const usernameResult = await getUsernameBasedOnWebID(web_id);
+  //   if (usernameResult[0][0].username != username) {
+  //     return res.json({message: "You are not allowed to edit this post!"})
+  //   }
+  // } else {
+  //   return res.json({message: "Error!"})
+  // }
+
+  if (email) {
+    const userResult = await getUsernameBasedOnEmail(email);
+    if (userResult && userResult.length > 0) {
+      user_id = userResult[0][0].id;
     }
-  } else {
-    return res.json({message: "Error!"})
   }
 
   // update if it's the same (post and hashtags table)
-  if (title && content) {
+  if (web_id && title && content) {
     const updatePostResult = await updatePost(web_id, title, content);
-    if (updatePostResult[0][0]) {
+    if (updatePostResult.length > 0) {
       check_update_post = true;
     } else {
       check_update_post = false;
@@ -530,9 +541,9 @@ app.post('/forum/edit-post', async (req, res) => {
   }
   
   if (check_update_post && check_update_hashtag) {
-    return res.json({message: "Update post successfully!"})
+    return res.json({message: "Success"})
   }
-  return res.json({message: "Fail to update post!"})
+  return res.json({message: "Fail"})
 })
 
 async function getUsernameBasedOnWebID(web_id) {
@@ -572,38 +583,31 @@ async function deleteOldTags(web_id) {
 
 // Add comment
 app.post('/forum/add-comment', async (req, res) => {
-  const post_web_id = req.body.web_id;
+  const post_web_id = req.body.post_web_id;
   const comment_web_id = req.body.comment_web_id;
-  const email = req.session.email;
-  const comment_content = req.body.comment_content;
+  const username = req.body.username;
+  const value = req.body.value;
+  const time = req.body.time;
 
-  var user_id;
-  
-  if (email) {
-    const userResult = await getUsernameBasedOnEmail(email);
-    if (userResult[0][0]) {
-      user_id = userResult[0][0].user_id;
-    }
-  }
-
-  if (post_web_id && user_id && comment_web_id && comment_content) {
-    const addCommentResult = await addComment(post_web_id, comment_web_id, user_id, comment_content);
-    if (addCommentResult[0][0]) {
-      return res.json({message: 'Comment added successfully!'})
+  if (post_web_id && username && comment_web_id && value && time) {
+    const addCommentResult = await addComment(post_web_id, comment_web_id, username, value, time);
+    if (addCommentResult.length>0) {
+      return res.json({message: 'Success'})
     } else {
-      return res.json({message: 'Fail to add comment!'})
+      return res.json({message: 'Fail'})
     }
   }
 }) 
 
-async function addComment(post_web_id, comment_web_id, user_id, comment_content) {
+async function addComment(post_web_id, comment_web_id, username, value, time) {
   try {
     const results = await pool.query(
-      `INSERT INTO comment (post_web_id,comment_web_id,user_id,comment_content) VALUES 
+      `INSERT INTO comment (post_web_id,comment_web_id,username,value,time) VALUES 
       ("${post_web_id}",
         "${comment_web_id}",
-        "${user_id}",
-        "${comment_content}")`
+        "${username}",
+        "${value}",
+        "${time}");`
     )
     return results;
   } catch (e) {
@@ -611,34 +615,376 @@ async function addComment(post_web_id, comment_web_id, user_id, comment_content)
   }
 }
 
+// Delete comment
+app.post('/forum/delete-comment', async (req, res) => {
+  const post_web_id = req.body.post_web_id;
+  const comment_web_id = req.body.comment_web_id;
+  
+  console.log("post_web_id: " + post_web_id);
+  console.log("comment_web_id: " + comment_web_id)
+  if (post_web_id && comment_web_id) {
+    const deleteCommentResult = await deleteComment(post_web_id, comment_web_id);
+    if (deleteCommentResult.length>0) {
+      return res.json({message: 'Success'})
+    } else {
+      return res.json({message: 'Fail'})
+    }
+  }
+}) 
+
+async function deleteComment(post_web_id, comment_web_id) {
+  try {
+    const results = await pool.query(
+      `DELETE FROM comment WHERE post_web_id = "${post_web_id}" and comment_web_id = "${comment_web_id}";`
+    )
+    return results;
+  } catch (e) {
+      console.error(e);
+  }
+}
+
+// Get all comments
+app.post('/forum/display-comment', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const getCommentResult = await getComments(post_web_id);
+  if (getCommentResult.length > 0) {
+    return res.json(getCommentResult[0]);
+  } else {
+    return res.json({message: 'Fail'});
+  }
+})
+
+async function getComments(post_web_id) {
+  try {
+    const results =  await pool.query(
+      `SELECT * FROM comment WHERE post_web_id = ${post_web_id};`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // DELETE post
 app.post('/forum/delete-post', async(req, res) => {
-  const web_id = req.body.web_id;
+  const web_id = req.body.id;
   if (web_id) {
     const deletePostResult = await deletePost(web_id);
     if (deletePostResult.length > 0) {
-      return res.json({message: "Delete post successfully"});
+      return res.json({message: "Success"});
     } else {
-      return res.json({message: "Error! Can't not delete post!"})
+      return res.json({message: "Fail"})
     }
   } else {
-    return res.json({message: "Error! Can't not delete post!"})
+    return res.json({message: "Fail"})
   }
 })
 
 async function deletePost(web_id) {
   try {
-    const results = await pool.query(
-      `DELETE FROM post WHERE web_id = "${web_id}";
-      DELETE FROM hashtag WHERE web_id = "${web_id}";
-      DELETE FROM comment WHERE post_web_id = "${web_id}"`
+    const result4 = await pool.query(
+      `UPDATE users SET points = points - 
+      (SELECT num_likes FROM post WHERE web_id = "${web_id}")
+      WHERE id = (SELECT user_id FROM post WHERE web_id = "${web_id}")`
     )
-      return results;
+    const result1 = await pool.query(
+      `DELETE FROM post WHERE web_id = "${web_id}";`, 
+      //`DELETE FROM hashtag WHERE web_id = "${web_id}";`, 
+      //`DELETE FROM comment WHERE post_web_id = "${web_id}";`
+    );
+    const result2 = await pool.query(
+      `DELETE FROM hashtag WHERE web_id = "${web_id}";`
+    );
+    const result3 = await pool.query(
+      `DELETE FROM comment WHERE post_web_id = "${web_id}";`
+    )
+    return result1;
   } catch (e) {
     console.error(e);
   }
 }
 
+// Display number of likes
+app.post('/forum/display-like', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const getLikesResult = await getLikes(post_web_id);
+  if (getLikesResult.length > 0) {
+    return res.json({num_likes: getLikesResult[0][0].num_likes});
+  } else {
+    return res.json({message: 'Fail'});
+  }
+})
+
+async function getLikes(post_web_id) {
+  try {
+    const results =  await pool.query(
+      `SELECT num_likes FROM post WHERE web_id = ${post_web_id};`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+app.post('/forum/display-state-like', async (req, res) => {
+  const post_web_id = req.body.id.id;
+  const email = req.session.email;
+  const getStateLikeResult = await getStateLike(post_web_id,email);
+  if (getStateLikeResult[0][0]) {
+    if (getStateLikeResult[0][0].liked === 1) {
+      return res.json({message: "Liked"});
+    } else {
+      return res.json({message: 'No'});
+    }
+  } else {
+    return res.json({message: 'No'});
+  }
+})
+
+async function getStateLike(post_web_id,email) {
+  try {
+    const results =  await pool.query(
+      `SELECT liked FROM react WHERE post_web_id = "${post_web_id}" and email="${email}";`
+    )
+    return results;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+app.post('/forum/add-state-like', async (req, res) => {
+const post_web_id = req.body.web_id;
+const liked = !req.body.liked;
+const email = req.session.email;
+const num_likes = req.body.num_likes;
+console.log("num_likes: " +  num_likes);
+
+const updateNumLikeResult = await updateNumLike(post_web_id, num_likes);
+// if (updateNumLikeResult.length > 0) {
+//   console.log("Update success");
+// }
+
+const getStateLikeResult = await getStateLike(post_web_id,email);
+if (getStateLikeResult[0][0]) {
+  console.log("Update here");
+  const updateStateLikeResult = await updateStateLike(post_web_id,email,liked ? 1 : 0);
+  // if (updateStateLikeResult.length > 0) {
+  //   return res.json({message: 'Success'});
+  // } else {
+  //   return res.json({message: 'Fail'});
+  // }
+} else {
+  const addStateLikeResult = await addStateLike(post_web_id,email,liked ? 1 : 0);
+  // if (addStateLikeResult.length > 0) {
+  //   return res.json({message: 'Success'});
+  // } else {
+  //   return res.json({message: 'Fail'});
+  // }
+}
+const getPointResult = await getPoint(post_web_id);
+    var updatePointResult;
+    if (liked) {
+      //console.log("Here 2");
+       updatePointResult = await updatePoint(post_web_id,getPointResult[0][0].points+1);
+    } else {
+      //console.log("Here 3");
+       updatePointResult = await updatePoint(post_web_id,getPointResult[0][0].points-1);
+    }
+})
+
+async function getPoint(post_web_id) {
+  try {
+    const result = await pool.query(
+      `SELECT points FROM users WHERE id = (
+              SELECT user_id
+              FROM post 
+              WHERE web_id="${post_web_id}")`
+    )
+    return result;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function updatePoint(post_web_id,newPoint) {
+  try {
+    const result = await pool.query(
+      `UPDATE users SET points="${newPoint}" WHERE id= 
+          (SELECT user_id FROM post WHERE web_id="${post_web_id}")`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function updateNumLike(post_web_id, num_likes) {
+  try {
+    const result = await pool.query(
+      `UPDATE post SET num_likes="${num_likes}" WHERE web_id = "${post_web_id}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function addStateLike(post_web_id,email,liked) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO react (post_web_id,email,liked) VALUES 
+      ("${post_web_id}","${email}","${liked}");`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function updateStateLike(post_web_id,email,liked) {
+  try {
+    const result = await pool.query(
+      `UPDATE react SET liked = "${liked}" 
+      WHERE post_web_id = "${post_web_id}" and email = "${email}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+////////////////////////////////////////
+// Keep APIs
+app.post('/keep/add-note', async(req,res) => {
+  const email = req.session.email;
+  const title = req.body.title;
+  const content = req.body.content;
+  // console.log(email);
+  // console.log(title);
+  // console.log(content);
+  const addNoteResult = await addNote(email, title, content);
+  if (addNoteResult.length>0){
+    return res.json({message: 'Success'});
+  } else {
+    return res.json({message:'Fail'});
+  }
+})
+
+
+async function addNote(email,title,content) {
+  try {
+    const result = await pool.query(
+      `INSERT INTO keep (email,title,content) VALUES("${email}","${title}","${content}"); `
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+app.post('/keep/delete-note', async(req,res) => {
+  const email = req.session.email;
+  const title = req.body.title;
+  const content = req.body.content;
+  // console.log(email);
+  // console.log(title);
+  // console.log(content);
+  const deleteNoteResult = await deleteNote(email, title, content);
+  if (deleteNoteResult.length>0){
+    return res.json({message: 'Success'});
+  } else {
+    return res.json({message:'Fail'});
+  }
+})
+
+
+async function deleteNote(email,title,content) {
+  try {
+    const result = await pool.query(
+      `DELETE FROM keep WHERE email="${email}" and title="${title}" and content="${content}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+app.get("/keep/display-notes", async (req, res) => {
+  const email = req.session.email;
+  if (email) {
+    const getNotesResult = await getNotes(email);
+    if (getNotesResult[0]) {
+      return res.json(getNotesResult[0]);
+    } else {
+      return res.json({message:'Fail'})
+    }
+  }
+})
+
+
+async function getNotes(email) {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM keep WHERE email="${email}";`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+/////////////////////////////////////////////////
+// Leaderboard APIs
+app.get("/leaderboard/get-data", async (req, res) => {
+  const getLeaderboardDataResult = await getLeaderboardData();
+  if (getLeaderboardDataResult.length > 0) {
+    return res.json(getLeaderboardDataResult[0]);
+  }
+})
+
+
+async function getLeaderboardData() {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM users WHERE verified=1 ORDER BY points DESC`
+    )
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+///////////////////////////////////////////////////
+// Homepage APIs
+app.get("/home/get-most-like-post", async (req, res) => {
+  const getMostLikePostResult = await getMostLikePost();
+  // console.log(getMostLikePostResult[0]);
+  // console.log(getMostLikePostResult[0].web_id);
+  if (getMostLikePostResult.length > 0) {
+    return res.json(getMostLikePostResult[0]);
+  }
+})
+
+
+async function getMostLikePost() {
+  try {
+    const result = await pool.query(
+      `SELECT web_id
+      FROM post 
+      WHERE num_likes = 
+      (SELECT num_likes
+      FROM post 
+      ORDER BY num_likes DESC
+      LIMIT 1)`
+    )
+    return result
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}`));

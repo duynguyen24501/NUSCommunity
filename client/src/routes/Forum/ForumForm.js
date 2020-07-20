@@ -1,4 +1,5 @@
 import React from "react";
+import {withRouter} from "react-router-dom";
 import BraftEditor from "braft-editor";
 import dayjs from "dayjs";
 import { Form, Input, message } from "antd";
@@ -8,13 +9,19 @@ import "./index.css";
 
 const controls = ["bold", "italic", "headings", "text-color", "emoji"];
 
-export default class ForumForm extends React.Component {
+class ForumForm extends React.Component {
   formRef = React.createRef();
 
-  state = {
-    tags: [],
-    tag: "",
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      tags: [],
+      tag: "",
+      email:"",
+      username: "",
+      bio:""
+    };
+  }
 
   componentDidMount() {
     const { data } = this.props;
@@ -23,6 +30,25 @@ export default class ForumForm extends React.Component {
         tags: data.tags,
       });
     }
+    this.getUserData();
+  }
+
+  getUserData() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.loggedin) {
+        message.error('Please register and login first to access!')
+        this.props.history.push('/')
+      }
+      this.setState({
+        email: response.email,
+        username: response.username,
+        bio: response.bio
+      })
+    })
   }
 
   onFinish = (values) => {
@@ -36,12 +62,13 @@ export default class ForumForm extends React.Component {
       id: data.id ? data.id : dayjs().valueOf(),
       title: values.title,
       msg: values.msg.toHTML(),
-      user: "abc",
+      email: this.state.email,
+      username: this.state.username,
+      bio: this.state.bio,
       time:dayjs().valueOf(),
-      // time: dayjs().format('YYYY-MM-DD hh:mm:ss'),
-      tags,
+      //time: dayjs.format('YYYY-MM-DD hh:mm:ss'),
+      tags: this.state.tags
     };
-    console.log(params);
     onSubmit(params);
   };
 
@@ -75,7 +102,7 @@ export default class ForumForm extends React.Component {
     const forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
-    message.success("delete success~");
+    //message.success("delete success~");
     sessionStorage.setItem(
       "forumList",
       JSON.stringify(
@@ -84,7 +111,24 @@ export default class ForumForm extends React.Component {
         })
       )
     );
-    history.push("/index/forum");
+
+    fetch('/forum/delete-post', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message === "Success") {
+        message.success("Delete post successfully!")
+      } else {
+        message.error("Fail to delete post!")
+      }
+      history.push("/index/forum");
+    })
   };
 
   render() {
@@ -179,3 +223,5 @@ export default class ForumForm extends React.Component {
     );
   }
 }
+
+export default withRouter(ForumForm);

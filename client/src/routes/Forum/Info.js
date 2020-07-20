@@ -1,6 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
-import { message, Form } from "antd";
+import { message, Form, Tag } from "antd";
 import BraftEditor from "braft-editor";
 import {
   UserAddOutlined,
@@ -12,6 +12,7 @@ import { parse } from "qs";
 import "braft-editor/dist/index.css";
 
 const controls = ["bold", "italic", "headings", "text-color", "emoji"];
+const colors = ["magenta", "orange", "cyan", "purple"];
 
 export default class Info extends React.Component {
   formRef = React.createRef();
@@ -19,19 +20,25 @@ export default class Info extends React.Component {
   state = {
     data: {},
     comment: [
-      {
-        id: dayjs().valueOf(),
-        time: dayjs().valueOf(),
-        user: "abc",
-        value: "<div>111</div>",
-      },
+      // {
+      //   comment_web_id: dayjs().valueOf(),
+      //   time: dayjs().valueOf(),
+      //   username: "abc",
+      //   value: "<div>111</div>",
+      // },
     ],
     like: false,
     favorite: false,
+    userComment:'',
+    num_likes: null,
   };
 
   componentDidMount() {
     const query = this.getPageQuery();
+    this.displayComments(query);
+    this.displayLikes(query);
+    this.displayStateLike(query);
+
     const forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
@@ -45,7 +52,115 @@ export default class Info extends React.Component {
         comment: BraftEditor.createEditorState(""),
       });
     }, 100);
+    this.getUserComment();
   }
+
+  displayStateLike(id) {
+    const params = {id: id}
+    //console.log(id);
+    fetch('/forum/display-state-like', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      //credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      //console.log(response.message);
+      if (response.message === 'Liked') {
+        this.setState({like: true});
+      } else {
+        this.setState({like: false});
+      }  
+    })
+  }
+
+  displayLikes(id) {
+    const params = {id: id}
+    fetch('/forum/display-like', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.message) {
+        this.setState({num_likes: response.num_likes});
+      } else {
+        message.error("Fail to display reacts!")
+      }  
+    })
+  }
+
+  dealLikeClick(like) {
+    var numLikes;
+    if (!like) {
+      numLikes = this.state.num_likes + 1;
+      this.setState({
+        num_likes: numLikes,
+      })
+    } else {
+      numLikes = this.state.num_likes - 1;
+      this.setState({
+        num_likes: numLikes,
+      })
+    }
+   
+    const param1 = {
+      web_id: this.state.data.id,
+      num_likes: numLikes,
+      liked: like
+    };
+    fetch('/forum/add-state-like', {
+      method: 'POST',
+      body: JSON.stringify(param1),
+      headers: {'Content-Type': 'application/json'}
+    })
+    // .then(res => res.json())
+    // .then(res => {
+    //     console.log("add: " + res.message);
+    // })
+
+    this.setState({ like: !like });
+}
+
+  displayComments(id) {
+    const params = {id: id}
+    fetch('/forum/display-comment', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      //credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (!response.message) {
+        this.setState({comment: response});
+      } else {
+        message.error("Fail to display comments!")
+      }
+    })
+  }
+
+  getUserComment() {
+    fetch('/auth/check-session', {
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(response => {
+      this.setState({ 
+        userComment: response.username
+      })
+      //this.state.userComment = response.username;
+    })
+  }
+
   getPageQuery = () => parse(window.location.href.split("?")[1]);
 
   remove = () => {
@@ -69,17 +184,47 @@ export default class Info extends React.Component {
   onFinish = (values) => {
     const { comment } = this.state;
     this.formRef.current.setFieldsValue();
+
+    const comment_web_id = dayjs().valueOf();
+    const time = dayjs().valueOf();
+    
     this.setState({
       comment: [
         ...comment,
         {
-          id: dayjs().valueOf(),
-          time: dayjs().valueOf(),
-          user: "abc",
+          comment_web_id: comment_web_id,
+          time: time,
+          username: this.state.userComment,
           value: values.comment.toHTML(),
         },
       ],
     });
+
+    const params = {
+      post_web_id: this.state.data.id,
+      comment_web_id: comment_web_id,
+      username: this.state.userComment,
+      value: values.comment.toHTML(),
+      time: time,
+    } 
+
+    fetch('/forum/add-comment', {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res.message);
+      if (res.message === "Success") {
+        message.success("Add comment successfully!")
+      } else {
+        message.error("Fail to add comment!")
+      }
+    })
+
     this.formRef.current.setFieldsValue({
       comment: BraftEditor.createEditorState(""),
     });
@@ -87,12 +232,40 @@ export default class Info extends React.Component {
 
   removeComment = (id) => {
     const { comment } = this.state;
-    message.success("delete success~");
-    this.setState({
-      comment: comment.filter((item) => {
-        return Number(item.id) !== id;
-      }),
-    });
+    //message.success("delete success~");
+
+    const post_web_id = this.state.data.id;
+    const params = {
+      post_web_id: post_web_id,
+      comment_web_id: id,
+    }
+
+    if (this.state.data.username === this.state.userComment) {
+      this.setState({
+        comment: comment.filter((item) => {
+          return Number(item.comment_web_id) !== id;
+        }),
+      });
+
+      fetch('/forum/delete-comment', {
+        method: 'POST',
+        body: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(res => {
+          console.log(res.message);
+          if (res.message === "Success") {
+            message.success("Delete comment successfully!")
+          } else {
+            message.error("Fail to delete post!")
+          }
+      })
+    } else {
+      message.error("You are not allowed to delete comment!");
+    }
   };
 
   render() {
@@ -104,8 +277,8 @@ export default class Info extends React.Component {
       <div className="forumInfo">
         <div className="forumInfo-data">
           <div className="forumInfo-data-user">
-            <UserAddOutlined className="mr-8" />
-            {data.user}
+            <UserAddOutlined className="mr-8 blue" />
+            {data.username}
             <div className="forumInfo-data-user-time">
               {dayjs(data.time).fromNow()}
             </div>
@@ -116,16 +289,18 @@ export default class Info extends React.Component {
             dangerouslySetInnerHTML={{ __html: data.msg }}
           />
           <div className="forumInfo-data-bottom">
-            {data.tags.map((res) => (
-              <div key={res} className="forumInfo-data-bottom-tag">
-                {res}
-              </div>
+            {data.tags.map((res,index) => (
+              <Tag key={res} color={colors[index % 4]}>
+              {res}
+              </Tag>
+              // <div key={res} className="forumInfo-data-bottom-tag">
+              //   {res}
+              // </div>
             ))}
             <div className="forumInfo-data-bottom-blank" />
+            <div className="forumInfo-data-number-like">{this.state.num_likes}</div>
             <LikeOutlined
-              onClick={() => {
-                this.setState({ like: !like });
-              }}
+              onClick={() => this.dealLikeClick(like)}
               className={`forumInfo-data-bottom-icon ${like ? "red" : ""}`}
             />
             {/* <HeartOutlined
@@ -180,11 +355,11 @@ export default class Info extends React.Component {
         </div>
         <div className="forumInfo-commentList">
           {comment.map((item) => (
-            <div key={item.id} className="forumInfo-commentList-item">
+            <div key={item.comment_web_id} className="forumInfo-commentList-item">
               <div className="forumInfo-commentList-item-header">
                 <div className="forumInfo-commentList-item-header-user">
                   <UserAddOutlined className="mr-8" />
-                  {item.user}
+                  {item.username}
                 </div>
                 <div className="forumInfo-commentList-item-header-time">
                   {dayjs(item.time).fromNow()}
@@ -195,8 +370,8 @@ export default class Info extends React.Component {
                 dangerouslySetInnerHTML={{ __html: item.value }}
               />
               <DeleteOutlined
-                onClick={() => this.removeComment(item.id)}
-                className="forumInfo-commentList-item-del"
+                onClick={() => this.removeComment(item.comment_web_id)}
+                className="forumInfo-commentList-item-del red"
               />
             </div>
           ))}

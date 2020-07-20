@@ -17,16 +17,28 @@ const colors = ["magenta", "orange", "cyan", "purple"];
 export default class Forum extends React.Component {
   state = {
     visible: false,
-    data: { name: "abc", email: "e12398132@u.nus.edu", bio: "some bio" },
+    data: { username: "", email: "", bio: "" },
+    searchKey:"",
   };
   onFinish = (values) => {
+    const {history} = this.props;
     console.log(values);
+    this.setState({
+      searchKey: values.discussion,
+    })
+
+    history.push("/index/forum");
   };
 
   render() {
-    const forumList = sessionStorage.getItem("forumList")
+    var forumList = sessionStorage.getItem("forumList")
       ? JSON.parse(sessionStorage.getItem("forumList"))
       : [];
+
+    if (this.state.searchKey !== ''){
+     forumList = forumList.filter((item) => item.tags.map(x => x.toLowerCase()).includes(this.state.searchKey.toLowerCase()));
+    }
+    
     const { visible, data } = this.state;
     const layout = {
       labelCol: {
@@ -41,6 +53,7 @@ export default class Forum extends React.Component {
         <div className="forum-list">
           <div className="forum-list-title">DISCUSSIONS</div>
           {forumList.map((item) => (
+            data.username = item.username, data.email = item.email, data.bio = item.bio,
             <div key={item.time} className="forum-list-item">
               <Link
                 to={`/index/forum/info?id=${item.id}`}
@@ -56,7 +69,7 @@ export default class Forum extends React.Component {
                   }}
                   style={{ cursor: "pointer" }}
                 >
-                  {item.user}
+                  {item.username}
                 </span>
               </div>
               <div className="forum-list-item-bottom">
@@ -95,6 +108,7 @@ export default class Forum extends React.Component {
               <Button
                 type="primary"
                 htmlType="submit"
+                className="forum-button-search"
                 icon={<SearchOutlined />}
               />
             </Form.Item>
@@ -110,13 +124,14 @@ export default class Forum extends React.Component {
         <Modal
           visible={visible}
           title="User Info"
+          className="modal-user-display"
           onCancel={() => {
             this.setState({ visible: false });
           }}
           footer={null}
         >
           <Form {...layout}>
-            <Form.Item label="Name">{data.name}</Form.Item>
+            <Form.Item label="Name">{data.username}</Form.Item>
             <Form.Item label="Email">{data.email}</Form.Item>
             <Form.Item label="Bio">{data.bio}</Form.Item>
           </Form>

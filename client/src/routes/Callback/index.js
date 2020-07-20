@@ -27,7 +27,7 @@ export default class Callback extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
+    //const { history } = this.props;
     return (
       <Result
         status="success"

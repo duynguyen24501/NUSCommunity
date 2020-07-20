@@ -21,6 +21,7 @@ export default class Profile extends React.Component {
       loggedin: false,
       email:'',
       username: '',
+      points: '',
       bio:'',
       message: ''
     }
@@ -44,10 +45,9 @@ export default class Profile extends React.Component {
         loggedin: response.loggedin,
         email: response.email,
         username: response.username,
+        points: response.points,
         bio: response.bio
       })
-      // console.log(this.state.loggedin);
-      // console.log(this.state.username);
     })
   }
 
@@ -122,7 +122,7 @@ export default class Profile extends React.Component {
 
   render() {
     const { history } = this.props;
-    const { info } = this.state;
+    //const { info } = this.state;
     return (
       <div className="profile">
         <div className="profile-center">
@@ -159,6 +159,8 @@ export default class Profile extends React.Component {
             <Form.Item>{this.state.username}</Form.Item>
             <div className="profile-con-form-label">Email</div>
             <Form.Item>{this.state.email}</Form.Item>
+            <div className="profile-con-form-label">Contribution Points</div>
+            <Form.Item>{this.state.points}</Form.Item>
             <div className="profile-con-form-label">Bio</div>
             <Form.Item>
               <Input type="text" placeholder="Bio" name="bio" id="bio" value={this.state.bio} onChange={this.handleBioChange}></Input>
