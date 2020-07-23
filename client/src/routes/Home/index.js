@@ -1,10 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { Empty, Form, Input, Button, Modal, Tag } from "antd";
+import { Empty, Form, Button, Modal, Tag } from "antd";
 import {
   UserAddOutlined,
-  SearchOutlined,
   EditOutlined,
 } from "@ant-design/icons";
 import "./index.css";
@@ -21,10 +20,22 @@ export default class Home extends React.Component {
     data: { username: "", email: "", bio: "" },
     mostLikePost: [],
     //searchKey:"",
+    posterEmail:""
   };
 
   componentDidMount() {
     this.getMostLikePost();
+    this.getPosterEmail();
+  }
+
+  getPosterEmail() {
+    fetch("/auth/check-session", {
+      credentials: "include",
+    })
+    .then((res) => res.json())
+    .then((response) => {
+      this.setState({posterEmail: response.email})
+    })
   }
 
   getMostLikePost() {
@@ -45,7 +56,7 @@ export default class Home extends React.Component {
   }
 
   onFinish = (values) => {
-    const {history} = this.props;
+    //const {history} = this.props;
     console.log(values);
     // this.setState({
     //   searchKey: values.discussion,
@@ -108,12 +119,14 @@ export default class Home extends React.Component {
                     {res}
                   </Tag>
                 ))}
-                <Link
+                {this.state.posterEmail === item.email ? (
+                  <Link
                   to={`/index/forum/edit?id=${item.id}`}
                   className="forum-list-item-bottom-edit"
                 >
                   <EditOutlined /> edit
                 </Link>
+                ): (<div className="forum-list-item-bottom-edit"></div>)}
                 <div className="forum-list-item-bottom-time">
                   {dayjs(item.time).fromNow()}
                 </div>

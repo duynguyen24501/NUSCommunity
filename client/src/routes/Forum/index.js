@@ -19,7 +19,23 @@ export default class Forum extends React.Component {
     visible: false,
     data: { username: "", email: "", bio: "" },
     searchKey:"",
+    posterEmail: "",
   };
+
+  componentDidMount() {
+    this.getPosterEmail();
+  }
+
+  getPosterEmail() {
+    fetch("/auth/check-session", {
+      credentials: "include",
+    })
+    .then((res) => res.json())
+    .then((response) => {
+      this.setState({posterEmail: response.email})
+    })
+  }
+
   onFinish = (values) => {
     const {history} = this.props;
     console.log(values);
@@ -53,6 +69,7 @@ export default class Forum extends React.Component {
         <div className="forum-list">
           <div className="forum-list-title">DISCUSSIONS</div>
           {forumList.map((item) => (
+            console.log(item),
             data.username = item.username, data.email = item.email, data.bio = item.bio,
             <div key={item.time} className="forum-list-item">
               <Link
@@ -78,12 +95,15 @@ export default class Forum extends React.Component {
                     {res}
                   </Tag>
                 ))}
-                <Link
+                {this.state.posterEmail === item.email ? (
+                  <Link
                   to={`/index/forum/edit?id=${item.id}`}
                   className="forum-list-item-bottom-edit"
                 >
                   <EditOutlined /> edit
                 </Link>
+                ): (<div className="forum-list-item-bottom-edit"></div>)}
+                
                 <div className="forum-list-item-bottom-time">
                   {dayjs(item.time).fromNow()}
                 </div>

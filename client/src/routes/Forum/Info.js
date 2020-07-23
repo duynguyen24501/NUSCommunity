@@ -269,7 +269,7 @@ export default class Info extends React.Component {
   };
 
   render() {
-    const { data, favorite, like, comment } = this.state;
+    const { data, like, comment } = this.state;
     if (!data.id) {
       return <div />;
     }
