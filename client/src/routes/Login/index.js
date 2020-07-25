@@ -114,7 +114,7 @@ class Login extends React.Component {
   render() {
       const alert = (this.state.message === null) ? <div/> : <div className="alert-style" role="alert">{this.state.message}</div>
       return (
-        <div style={{ paddingTop: 25 }}>
+        <div style={{ paddingTop: 25 }} data-test="loginComponent">
           <div className="login">
             <div className="login-title">Welcome to the NUSCommunity !</div>
             <div className="login-con">
@@ -149,7 +149,7 @@ class Login extends React.Component {
                 </Form.Item>
                 <Form.Item>
                   <Link className="login-con-form-reset" to="/reset">
-                    forgot password?
+                    Forgot Password?
                   </Link>
                 </Form.Item>
                 
@@ -159,6 +159,7 @@ class Login extends React.Component {
                     onClick={this.handleLogin}
                     className="login-con-form-btn"
                     size="large"
+                    data-test="buttonComponent"
                   >
                     SIGN IN
                   </Button>

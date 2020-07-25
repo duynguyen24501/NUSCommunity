@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Forum Component Form List Should render forum list 1`] = `ShallowWrapper {}`;
+
+exports[`Forum Component Should render correctly 1`] = `ShallowWrapper {}`;

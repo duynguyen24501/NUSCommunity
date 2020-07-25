@@ -135,7 +135,7 @@ class Reset extends React.Component {
     const alert = (this.state.message === null) ? <div/> : <div className="alert-style" role="alert">{this.state.message}</div>
     return (
     <div style={{ paddingTop: 36 }}>
-      <div className="reset">
+      <div className="reset" data-test="resetComponent">
         <Row gutter={16}>
           <Col span={6}>
             <div className="reset-left">
@@ -211,6 +211,7 @@ class Reset extends React.Component {
                     onClick={this.handleReset}
                     className="reset-right-form-button"
                     size="large"
+                    data-test="buttonComponent"
                   >
                     Reset
                   </Button>

@@ -144,7 +144,7 @@ class Register extends React.Component {
     render() {
         const alert = (this.state.message === null) ? <div /> : <div className="alert-style" role="alert">{this.state.message}</div>
         return (
-            <div style={{ paddingTop: 36 }}>
+            <div style={{ paddingTop: 36 }} data-test="registerComponent">
                 <div className="register">
                     <Row gutter={16}>
                         <Col span={6}>
@@ -157,7 +157,7 @@ class Register extends React.Component {
                         </Col>
                         <Col span={18}>
                             <div className="register-right">
-                                <div className="register-right-title">Sign up form</div>
+                                <div className="register-right-title">Registration Form</div>
                                 <Form
                                     name="normal_register"
                                     className="register-right-form"
@@ -232,6 +232,7 @@ class Register extends React.Component {
                                             onClick={this.handleSignUp}
                                             className="register-right-form-button"
                                             size="large"
+                                            data-test="buttonComponent"
                                         >
                                             Register
                                         </Button>

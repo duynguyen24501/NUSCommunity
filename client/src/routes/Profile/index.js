@@ -124,7 +124,7 @@ export default class Profile extends React.Component {
     const { history } = this.props;
     //const { info } = this.state;
     return (
-      <div className="profile">
+      <div className="profile" data-test="profileComponent">
         <div className="profile-center">
           <div
             onClick={() => {
@@ -193,6 +193,7 @@ export default class Profile extends React.Component {
               type="submit"
               onClick={this.handleProfile}
               size="large"
+              data-test="buttonComponent"
             >
               Save
             </Button>

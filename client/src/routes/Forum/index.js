@@ -65,8 +65,8 @@ export default class Forum extends React.Component {
       },
     };
     return (
-      <div className="forum">
-        <div className="forum-list">
+      <div className="forum" data-test="forumComponent">
+        <div className="forum-list" data-test="forumList">
           <div className="forum-list-title">DISCUSSIONS</div>
           {forumList.map((item) => (
             console.log(item),
@@ -137,6 +137,7 @@ export default class Forum extends React.Component {
             type="primary"
             href="/index/forum/add"
             className="forum-add-btn"
+            data-test="searchButtonComponent"
           >
             New Discussion
           </Button>

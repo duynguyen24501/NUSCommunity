@@ -85,8 +85,8 @@ export default class Keep extends React.Component {
   render() {
     const { notes } = this.state;
     return (
-      <div>
-        <CreateArea onAdd={this.addNote} />
+      <div data-test="keepComponent">
+        <CreateArea onAdd={this.addNote} data-test="addArea"/>
         {notes.map((noteItem, index) => {
           return (
             <Note

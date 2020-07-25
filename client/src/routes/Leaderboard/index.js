@@ -64,7 +64,7 @@ export default class Leaderboard extends React.Component {
       },
     ];
     return (
-      <div className="leaderboard">
+      <div className="leaderboard" data-test="leaderboardComponent">
         <Table
           title={() => <h4 className="leaderboard-title">Ranking</h4>}
           className="leaderboard-table"
@@ -72,6 +72,7 @@ export default class Leaderboard extends React.Component {
           columns={columns}
           bordered
           pagination={false}
+          data-test="leaderboardTableComponent"
         />
       </div>
     );

@@ -88,9 +88,9 @@ export default class Home extends React.Component {
       // <div>
       //   <h1></h1>
       // </div>
-      <div>
+      <div data-test="homeComponent">
       <div className="forum">
-        <div className="forum-list">
+        <div className="forum-list" data-test="postListComponent">
           <div className="forum-list-title-home">THE MOST LIKED POSTS</div>
           {forumList.map((item) => (
             //console.log(item),
@@ -173,7 +173,7 @@ export default class Home extends React.Component {
           }}
           footer={null}
         >
-          <Form {...layout}>
+          <Form {...layout} data-test="userInfoComponent">
             <Form.Item label="Name">{data.username}</Form.Item>
             <Form.Item label="Email">{data.email}</Form.Item>
             <Form.Item label="Bio">{data.bio}</Form.Item>
