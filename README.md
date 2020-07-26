@@ -6,12 +6,12 @@ NUSCommunity
 + Download MySQL(server) at https://dev.mysql.com/downloads/ + MySQLWorkbench(environment) at https://dev.mysql.com/downloads/workbench/
 
 + Set up MySQL server inside MySQLWorkbench:  
-_ If you have an available server already, go updating your server data in .env file (at root folder). 
+_ If you have an available server already, go updating your server data in .env file (at root folder).  
 _ If not, run this command in MySQLWorkbench: `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'duynguyen24501';`
 
-+ Create relational tables in MySQL database:
-_ Check out all MySQL commands to create database/tables inside folder named 'database'
-_ Copy and paste the code command and run in your MySQLWorkbench server in order:
++ Create relational tables in MySQL database:  
+_ Check out all MySQL commands to create database/tables inside folder named 'database'.  
+_ Copy, paste the command code and run in your MySQLWorkbench server in order:
 1. createDB.sql
 2. userTable.sql
 3. keepTable.sql
@@ -29,6 +29,6 @@ _ At root directory: `node server` or `nodemon server` to start backend server. 
 _ At client directory: `npm start` to start react server. </br>
 
  # TESTING
- The testing files are put at client/src/test
+ The testing files are put at client/src/test.  
  To run testing, go inside client directory, type command: `npm test`
 
