@@ -5,8 +5,8 @@ NUSCommunity
 + Install Node at link: https://nodejs.org/en/download/
 + Download MySQL(server) at https://dev.mysql.com/downloads/ + MySQLWorkbench(environment) at https://dev.mysql.com/downloads/workbench/
 
-+ Set up MySQL server inside MySQLWorkbench
-_ If you have an available server already, go updating your server data in .env file (at root folder) 
++ Set up MySQL server inside MySQLWorkbench:  
+_ If you have an available server already, go updating your server data in .env file (at root folder). 
 _ If not, run this command in MySQLWorkbench: `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'duynguyen24501';`
 
 + Create relational tables in MySQL database:
