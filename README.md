@@ -1,5 +1,5 @@
-# PROJECT (WITH NEW TOOLS)
-NUSCommunity 
+# NUSCommunity
+NUSCommunity is a web application whereby students can receive various help while contributing back to the NUS community.
  
  # SET UP TO LAUNCH PROJECT
 + Install Node at link: https://nodejs.org/en/download/
@@ -31,4 +31,6 @@ _ At client directory: `npm start` to start react server. </br>
  # TESTING
  The testing files are put at client/src/test.  
  To run testing, go inside client directory, type command: `npm test`
-
+ ______________________________________________________________
+An Orbital 2020 Project by **Nguyen Khanh Duy** & **Koh Zhe Hao**  
+Level of achievement: **Artemis** (Extreme)
